@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - StudentSphere</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA10dFU9EkCh67bEmTJZq2E5xcZCAzjvuU",
+            authDomain: "studentsphere-dfad1.firebaseapp.com",
+            projectId: "studentsphere-dfad1",
+            storageBucket: "studentsphere-dfad1.firebasestorage.app",
+            messagingSenderId: "395529468729",
+            appId: "1:395529468729:web:8129c0ba9943c77be146e8",
+            measurementId: "G-HR4PZYSBZQ"
+        };
+
+        // Initialize Firebase
+        let auth;
+        try {
+            const app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            console.log("Firebase initialized successfully in login.html");
+        } catch (error) {
+            console.error("Firebase initialization failed in login.html:", error);
+            alert("Failed to initialize Firebase. Please check your internet connection or Firebase configuration.");
+            throw error;
+        }
+
+        // DOM elements
+        const errorMessage = document.getElementById('error-message');
+        const loginBtn = document.getElementById('login-btn');
+        const signupLink = document.getElementById('signup-link');
+        const googleSignInBtn = document.getElementById('google-signin-btn');
+
+        if (!loginBtn || !signupLink || !errorMessage || !googleSignInBtn) {
+            console.error("Login button, signup link, error message, or Google Sign-In button not found in DOM");
+            alert("Page elements not found. Please refresh the page.");
+            throw new Error("DOM elements missing");
+        }
+
+        // Show error message
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.remove('hidden');
+            setTimeout(() => errorMessage.classList.add('hidden'), 5000);
+        }
+
+        // Login with Email and Password
+        loginBtn.addEventListener('click', async () => {
+            console.log("Login button clicked");
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            if (!email || !password) {
+                showError("Please enter both email and password.");
+                return;
+            }
+
+            try {
+                console.log("Attempting to sign in with email:", email);
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                console.log("Login successful for user:", userCredential.user.email);
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error("Login error:", error.message);
+                showError(error.message);
+            }
+        });
+
+        // Signup with Email and Password
+        signupLink.addEventListener('click', async (e) => {
+            e.preventDefault();
+            console.log("Signup link clicked");
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            if (!email || !password) {
+                showError("Please enter both email and password.");
+                return;
+            }
+
+            try {
+                console.log("Attempting to sign up with email:", email);
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                console.log("Signup successful for user:", userCredential.user.email);
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error("Signup error:", error.message);
+                showError(error.message);
+            }
+        });
+
+        // Google Sign-In
+        googleSignInBtn.addEventListener('click', async () => {
+            console.log("Google Sign-In button clicked");
+            const provider = new GoogleAuthProvider();
+            try {
+                console.log("Attempting to sign in with Google...");
+                const userCredential = await signInWithPopup(auth, provider);
+                console.log("Google Sign-In successful for user:", userCredential.user.email);
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error("Google Sign-In error:", error.message);
+                showError(error.message);
+            }
+        });
+
+        // Check auth state
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log("User is already logged in:", user.email);
+                window.location.href = 'index.html';
+            } else {
+                console.log("No user is logged in, staying on login page");
+            }
+        });
+    </script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-6 rounded-lg shadow-md w-full max-w-sm">
+        <h2 class="text-2xl font-bold mb-4 text-center">Login to StudentSphere</h2>
+        <input id="email" type="email" placeholder="Email" class="w-full p-2 mb-4 border rounded">
+        <input id="password" type="password" placeholder="Password" class="w-full p-2 mb-4 border rounded">
+        <button id="login-btn" class="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">Login</button>
+        <button id="google-signin-btn" class="w-full mt-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 flex items-center justify-center">
+            <img src="https://www.google.com/s2/favicons?domain=google.com" alt="Google Icon" class="w-5 h-5 mr-2"> Sign in with Google
+        </button>
+        <p class="mt-2 text-center">Don't have an account? <a href="#" id="signup-link" class="text-[#0a66c2]">Sign Up</a></p>
+        <p id="error-message" class="mt-2 text-red-500 text-center hidden"></p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - StudentSphere</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA10dFU9EkCh67bEmTJZq2E5xcZCAzjvuU",
+            authDomain: "studentsphere-dfad1.firebaseapp.com",
+            projectId: "studentsphere-dfad1",
+            storageBucket: "studentsphere-dfad1.firebasestorage.app",
+            messagingSenderId: "395529468729",
+            appId: "1:395529468729:web:8129c0ba9943c77be146e8",
+            measurementId: "G-HR4PZYSBZQ"
+        };
+
+        let auth, db;
+        try {
+            const app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+            console.log("Firebase initialized successfully in profile.html");
+        } catch (error) {
+            console.error("Firebase initialization failed in profile.html:", error);
+            alert("Failed to initialize Firebase. Please check your internet connection or Firebase configuration.");
+            throw error;
+        }
+    </script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Navigation Bar -->
+    <nav class="bg-white text-[#0a66c2] p-4 shadow-md border-b">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">StudentSphere</h1>
+            <div>
+                <a href="index.html" >Home</a>
+                <a href="explore.html" >Explore</a>
+                <button id="logout" class="ml-4 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Detailed Profile Section -->
+    <div class="container mx-auto mt-6 bg-white p-6 rounded-lg shadow-md">
+        <div class="flex flex-col md:flex-row items-center md:items-start">
+            <img id="profile-pic" src="https://via.placeholder.com/150" alt="Profile Picture" class="w-32 h-32 rounded-full object-cover">
+            <div class="md:ml-6 mt-4 md:mt-0">
+                <h2 id="profile-name" class="text-2xl font-bold"></h2>
+                <p id="profile-bio" class="text-gray-600 mt-2"></p>
+                <p id="profile-studies" class="mt-2"><strong>Studying:</strong> <span></span></p>
+                <p id="profile-projects" class="mt-2"><strong>Projects:</strong> <span></span></p>
+            </div>
+        </div>
+
+        <div class="mt-6">
+            <div class="border-b flex space-x-4 mb-4">
+                <button id="tab-about" class="pb-2 border-b-2 border-[#0a66c2] text-[#0a66c2]">About</button>
+                <button id="tab-posts" class="pb-2 text-gray-600">Posts</button>
+                <button id="tab-events" class="pb-2 text-gray-600">Events</button>
+            </div>
+
+            <div id="about-content">
+                <h3 class="text-xl font-semibold mb-4">Achievements</h3>
+                <ul id="achievements" class="list-disc pl-6 mb-6"></ul>
+                <h3 class="text-xl font-semibold mb-4">Certificates</h3>
+                <ul id="certificates" class="list-disc pl-6 mb-6"></ul>
+            </div>
+            <div id="posts-content" class="hidden">
+                <h3 class="text-xl font-semibold mb-4">Posts & Updates</h3>
+                <div id="user-posts" class="space-y-4"></div>
+            </div>
+            <div id="events-content" class="hidden">
+                <h3 class="text-xl font-semibold mb-4">Events Created</h3>
+                <div id="user-events" class="space-y-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="profile.js"></script>
+</body>
+</html>

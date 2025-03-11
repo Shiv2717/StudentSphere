@@ -1,0 +1,77 @@
+/* LinkedIn-inspired styles */
+body {
+    background: #f3f2ef; /* LinkedIn's light gray background */
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+.profile-picture {
+    width: 100px; /* Adjust the size as needed */
+    height: 100px; /* Ensure the height is the same as the width */
+    border-radius: 50%; /* This makes the image a circle */
+    object-fit: cover; /* Ensures the image covers the entire area */
+}
+
+
+nav {
+    background: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
+    color: #0a66c2; /* LinkedIn blue */
+}
+
+nav h1 {
+    color: #0a66c2;
+}
+
+nav a, nav button {
+    color: #0a66c2;
+    padding: 8px 16px; /* Options in nav bar should be in a box */
+    border-radius: 4px;
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+nav a:hover, nav button:hover {
+    background-color: #0a66c2;
+    color: white;
+}
+
+.shadow-md {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+}
+
+button {
+    transition: all 0.3s ease;
+    border-radius: 9999px; /* Rounded buttons like LinkedIn */
+}
+
+button:hover {
+    background-color: #0a66c2;
+    color: white;
+}
+
+textarea, input {
+    border: 1px solid #ccd0d5;
+    border-radius: 4px;
+    padding: 8px;
+}
+
+textarea:focus, input:focus {
+    outline: none;
+    border-color: #0a66c2;
+    box-shadow: 0 0 0 2px rgba(10, 102, 194, 0.2);
+}
+
+/* Profile card */
+#profile, .profile-card {
+    background: white;
+    padding: 16px;
+}
+
+/* Feed and Events */
+#posts div, #event-list div {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 12px;
+    background: white;
+}

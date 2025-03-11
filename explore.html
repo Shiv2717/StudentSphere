@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore - StudentSphere</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA10dFU9EkCh67bEmTJZq2E5xcZCAzjvuU",
+            authDomain: "studentsphere-dfad1.firebaseapp.com",
+            projectId: "studentsphere-dfad1",
+            storageBucket: "studentsphere-dfad1.firebasestorage.app",
+            messagingSenderId: "395529468729",
+            appId: "1:395529468729:web:8129c0ba9943c77be146e8",
+            measurementId: "G-HR4PZYSBZQ"
+        };
+
+        let auth, db;
+        try {
+            const app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+            console.log("Firebase initialized successfully in explore.html");
+        } catch (error) {
+            console.error("Firebase initialization failed in explore.html:", error);
+            alert("Failed to initialize Firebase. Please check your internet connection or Firebase configuration.");
+            throw error;
+        }
+    </script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Navigation Bar -->
+    <nav class="bg-white text-[#0a66c2] p-4 shadow-md border-b">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">StudentSphere</h1>
+            <div>
+                <a href="index.html" class="mx-2 hover:underline">Home</a>
+                <a href="#explore" class="mx-2 hover:underline">Explore</a>
+                <button id="logout" class="ml-4 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Explore Section -->
+    <div class="container mx-auto mt-6">
+        <h2 class="text-2xl font-semibold mb-6 text-center">Explore Student Profiles</h2>
+        <div id="profile-list" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Profiles will be added here dynamically -->
+        </div>
+    </div>
+
+    <script type="module" src="explore.js"></script>
+</body>
+</html>

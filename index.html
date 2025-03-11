@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudentSphere</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+        h1 {
+            font-family: 'Permanent Marker', cursive;
+        }
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+        import { getStorage } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-storage.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA10dFU9EkCh67bEmTJZq2E5xcZCAzjvuU",
+            authDomain: "studentsphere-dfad1.firebaseapp.com",
+            projectId: "studentsphere-dfad1",
+            storageBucket: "studentsphere-dfad1.firebasestorage.app",
+            messagingSenderId: "395529468729",
+            appId: "1:395529468729:web:8129c0ba9943c77be146e8",
+            measurementId: "G-HR4PZYSBZQ"
+        };
+
+        let auth, db, storage;
+        try {
+            const app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+            storage = getStorage(app);
+            console.log("Firebase initialized successfully in index.html");
+        } catch (error) {
+            console.error("Firebase initialization failed in index.html:", error);
+            alert("Failed to initialize Firebase. Please check your internet connection or Firebase configuration.");
+            throw error;
+        }
+    </script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Navigation Bar -->
+    <nav class="bg-white text-[#0a66c2] p-4 shadow-md border-b">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">StudentSphere</h1>
+            <div>
+                <a href="#profile" >Profile</a>
+                <a href="#feed" >Feed</a>
+                <a href="#events" >Events</a>
+                <a href="explore.html" >Explore</a>
+                <button id="logout" class="ml-4 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Profile Section -->
+        <section id="profile" class="bg-white rounded-lg shadow-md relative">
+            <div class="h-32 bg-gray-300 rounded-t-lg" style="background: url('https://via.placeholder.com/800x200') no-repeat center/cover;"></div>
+            <div class="p-6 pt-16">
+            <img id="profile-pic" src="https://via.placeholder.com/150" alt="Profile Picture" class="w-24 h-24 rounded-full absolute top-16 left-6 border-4 border-white object-cover">
+            <input type="file" id="profile-pic-upload" accept="image/*" class="mt-4 hidden">
+            <p id="profile-name" class="text-xl font-bold mt-2">John Doe</p>
+            <p id="profile-bio" class="text-gray-600">Computer Science student | Love coding & music</p>
+            <button id="edit-profile" class="mt-4 bg-transparent border border-[#0a66c2] text-[#0a66c2] px-4 py-1 hover:bg-[#0a66c2] hover:text-white">Edit Profile</button>
+            </div>
+        </section>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+            const profilePic = document.getElementById('profile-pic');
+            const profilePicUpload = document.getElementById('profile-pic-upload');
+            const profileName = document.getElementById('profile-name');
+            const profileBio = document.getElementById('profile-bio');
+            const editProfileBtn = document.getElementById('edit-profile');
+
+            // Mock user data
+            const userData = {
+                name: "Jane Smith",
+                bio: "Web Developer | Tech Enthusiast",
+                profilePic: "https://via.placeholder.com/150/0000FF/808080"
+            };
+
+            // Update profile with user data
+            profileName.textContent = userData.name;
+            profileBio.textContent = userData.bio;
+            profilePic.src = userData.profilePic;
+
+            // Edit profile functionality
+            editProfileBtn.addEventListener('click', () => {
+                const newName = prompt("Enter new name:", userData.name);
+                const newBio = prompt("Enter new bio:", userData.bio);
+                if (newName) {
+                profileName.textContent = newName;
+                userData.name = newName;
+                }
+                if (newBio) {
+                profileBio.textContent = newBio;
+                userData.bio = newBio;
+                }
+            });
+
+            // Profile picture upload functionality
+            profilePic.addEventListener('click', () => {
+                profilePicUpload.click();
+            });
+
+            profilePicUpload.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    profilePic.src = e.target.result;
+                    userData.profilePic = e.target.result;
+                };
+                reader.readAsDataURL(file);
+                }
+            });
+            });
+        </script>
+
+        <!-- Feed Section -->
+        <section id="feed" class="md:col-span-2 bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold mb-4">Community Feed</h2>
+            <textarea id="post-input" class="w-full p-2 border rounded" placeholder="What's on your mind?"></textarea>
+            <button id="post-btn" class="mt-2 bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600">Post</button>
+            <div id="posts" class="mt-4 space-y-4">
+            <!-- Posts will be added here dynamically -->
+            </div>
+        </section>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+            const feedSection = document.getElementById('feed');
+            const colors = ['bg-red-100', 'bg-green-100', 'bg-blue-100', 'bg-yellow-100'];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            feedSection.classList.add(randomColor);
+            });
+        </script>
+
+        <!-- Events Section -->
+        <section id="events" class="md:col-span-3 bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold mb-4">Community Events</h2>
+            <button id="create-event-btn" class="mb-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Create Event</button>
+            <div id="event-list" class="space-y-4">
+                <!-- Events will be added here dynamically -->
+            </div>
+        </section>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const eventList = document.getElementById('event-list');
+                const createEventBtn = document.getElementById('create-event-btn');
+
+                // Function to render events
+                const renderEvents = () => {
+                    eventList.innerHTML = "";
+                    events.forEach(event => {
+                        const eventItem = document.createElement('div');
+                        eventItem.className = "p-4 bg-gray-100 rounded-lg shadow-md";
+                        eventItem.innerHTML = `
+                            <h3 class="text-lg font-bold">${event.title}</h3>
+                            <p class="text-gray-600">${event.date}</p>
+                            <p>${event.description}</p>
+                        `;
+                        eventList.appendChild(eventItem);
+                    });
+                };
+
+                // Initial render
+                renderEvents();
+
+                // Create event functionality
+                createEventBtn.addEventListener('click', () => {
+                    const title = prompt("Enter event title:");
+                    const date = prompt("Enter event date (YYYY-MM-DD):");
+                    const description = prompt("Enter event description:");
+                    if (title && date && description) {
+                        events.push({ title, date, description });
+                        renderEvents();
+                    }
+                });
+            });
+
+            // Function to render events
+            const renderEvents = () => {
+                eventList.innerHTML = "";
+                events.forEach((event, index) => {
+                    const eventItem = document.createElement('div');
+                    eventItem.className = "p-4 bg-gray-100 rounded-lg shadow-md";
+                    eventItem.innerHTML = `
+                        <h3 class="text-lg font-bold">${event.title}</h3>
+                        <p class="text-gray-600">${event.date}</p>
+                        <p>${event.description}</p>
+                        <button class="mt-2 bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600" onclick="removeEvent(${index})">Remove</button>
+                    `;
+                    eventList.appendChild(eventItem);
+                });
+            };
+
+            // Function to remove event
+            const removeEvent = (index) => {
+                events.splice(index, 1);
+                renderEvents();
+            };
+
+            // Initial render
+            renderEvents();
+        </script>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
