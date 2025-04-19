@@ -2,6 +2,8 @@
 
 StudentSphere is a decentralized social hub tailored specifically for college students. Designed as a futuristic LinkedIn-style platform, it enables students to connect, collaborate, share updates, showcase skills, and grow together — all in a vibrant and engaging ecosystem.
 
+---
+
 # Features
 
 User Authentication (Firebase)
@@ -16,7 +18,7 @@ Resume Builder, real-time preview, download as PDF
 
 ---
 
-Tech Stack
+# Tech Stack
 
 Frontend:
 
@@ -26,13 +28,15 @@ Tailwind CSS
 
 Framer Motion
 
+---
 
-Backend / DB:
+# Backend / DB:
 
 Firebase (Authentication, Firestore, Storage)
 
+---
 
-Tools:
+# Tools:
 
 Git & GitHub
 
