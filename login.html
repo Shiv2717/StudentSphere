@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Sphere Login</title>
+  <link rel="stylesheet" href="style2.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+</head>
+<body>
+  <div class="page-bg">
+    <div class="login-card">
+      <h1 style="font-family: 'Three-Sixty Condensed', sans-serif;">Student Sphere</h1>
+      <img src="logo.png" alt="Student Sphere Logo" class="logo">
+      <h2>Sign in to Student Sphere</h2>
+      <input type="text" id="email" placeholder="Email or phone">
+      <input type="password" id="password" placeholder="Password">
+      <button id="login-btn">Sign In</button>
+
+      <p>OR</p>
+      <button id="google-signin-btn" class="google-btn">Sign in with Google</button>
+
+      <p>New to Student Sphere? <a href="#">Join now</a></p>
+    </div>
+  </div>
+
+  <div id="successModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h2>Login Successful!</h2>
+      <p>Welcome to Student Sphere. Redirecting to the main page...</p>
+    </div>
+  </div>
+
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+  apiKey: "AIzaSyB6vh2QCsxMHU9rQ99GxSEFDkT7cgnrduQ",
+  authDomain: "student-sphere-bb396.firebaseapp.com",
+  databaseURL: "https://student-sphere-bb396-default-rtdb.firebaseio.com",
+  projectId: "student-sphere-bb396",
+  storageBucket: "student-sphere-bb396.firebasestorage.app",
+  messagingSenderId: "1059223650747",
+  appId: "1:1059223650747:web:36d989ca27354a7bc1449e",
+  measurementId: "G-5Q5H5ZJF09"
+};
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    document.getElementById("login-btn").addEventListener("click", () => {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      if (!email || !password) {
+        alert("Please enter both email and password.");
+        return;
+      }
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          const modal = document.getElementById("successModal");
+          modal.style.display = "flex";
+
+          setTimeout(() => {
+            localStorage.setItem("isLoggedIn", "true"); 
+            window.location.href = "index.html";
+          }, 3000);
+        })
+        .catch((error) => {
+          console.error("Error during login:", error);
+          alert("Login failed: " + error.message);
+        });
+    });
+
+    // Google Sign-In button click
+    document.getElementById("google-signin-btn").addEventListener("click", () => {
+      const provider = new firebase.auth.GoogleAuthProvider();
+
+      auth.signInWithPopup(provider)
+        .then((result) => {
+  
+          const modal = document.getElementById("successModal");
+          modal.style.display = "flex";
+
+        
+          setTimeout(() => {
+            localStorage.setItem("isLoggedIn", "true"); 
+            window.location.href = "index.html";
+          }, 3000);
+        })
+        .catch((error) => {
+          console.error("Error during Google Sign-In:", error);
+          alert("Google Sign-In failed: " + error.message);
+        });
+    });
+
+    document.querySelector(".close-btn").addEventListener("click", () => {
+      const modal = document.getElementById("successModal");
+      modal.style.display = "none";
+    });
+  </script>
+</body>
+</html>
+

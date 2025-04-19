@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StudentSphere - Feedback</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet"/>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(135deg, #010202, #203a43, #7696a4);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      flex-direction: column;
+    }
+
+    .feedback-header {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 10;
+    }
+
+    .feedback-container {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 30px;
+      width: 100%;
+      max-width: 500px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .feedback-container h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 28px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      font-size: 16px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      background-color: #00c9a7;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      background-color: #00b38f;
+    }
+
+    .message {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 16px;
+      display: none;
+    }
+
+    .message.success {
+      color: #4caf50;
+    }
+
+    .message.error {
+      color: #f44336;
+    }
+
+    .back-button {
+      background-color: var(--highlight);
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 12px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .back-button:hover {
+      background-color: var(--highlight-hover);
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <header class="feedback-header">
+    <button class="back-button" onclick="window.location.href='index.html'">← Back</button>
+  </header>
+  <div class="feedback-container">
+    <h2>Send Us Your Feedback</h2>
+    <form id="feedbackForm">
+      <div class="form-group">
+        <label for="name">Your Name *</label>
+        <input type="text" id="name" required />
+      </div>
+      <div class="form-group">
+        <label for="email">Your Email *</label>
+        <input type="email" id="email" required />
+      </div>
+      <div class="form-group">
+        <label for="message">Your Feedback *</label>
+        <textarea id="message" required></textarea>
+      </div>
+      <button type="submit" class="submit-btn">Submit Feedback</button>
+      <div class="message" id="formMessage"></div>
+    </form>
+  </div>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyB6vh2QCsxMHU9rQ99GxSEFDkT7cgnrduQ",
+      authDomain: "student-sphere-bb396.firebaseapp.com",
+      databaseURL: "https://student-sphere-bb396-default-rtdb.firebaseio.com",
+      projectId: "student-sphere-bb396",
+      storageBucket: "student-sphere-bb396.firebasestorage.app",
+      messagingSenderId: "1059223650747",
+      appId: "1:1059223650747:web:36d989ca27354a7bc1449e",
+      measurementId: "G-5Q5H5ZJF09"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const form = document.getElementById('feedbackForm');
+    const formMessage = document.getElementById('formMessage');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const message = document.getElementById('message').value.trim();
+
+      if (!name || !email || !message) {
+        formMessage.textContent = 'Please fill in all fields.';
+        formMessage.className = 'message error';
+        formMessage.style.display = 'block';
+        return;
+      }
+
+      try {
+        await db.collection('feedback').add({
+          name,
+          email,
+          message,
+          timestamp: new Date()
+        });
+
+        formMessage.textContent = 'Thank you for your feedback!';
+        formMessage.className = 'message success';
+        formMessage.style.display = 'block';
+        form.reset();
+      } catch (error) {
+        formMessage.textContent = 'Error submitting feedback. Please try again.';
+        formMessage.className = 'message error';
+        formMessage.style.display = 'block';
+        console.error('Firebase error:', error);
+      }
+
+      setTimeout(() => {
+        formMessage.style.display = 'none';
+      }, 4000);
+    });
+  </script>
+</body>
+</html>

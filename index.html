@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Sphere</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+        <img src="logo.png" alt="Student Sphere Logo" class="logo-img" />
+        <span style="font-family: 'Three-Sixty Condensed', sans-serif;">Student Sphere</span>
+      </div>
+      
+    <nav id="nav-links">
+      <a href="#about">About</a>
+      <a href="#features">Features</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="auth-buttons" id="authButtons">
+      <button class="auth-btn" onclick="window.location.href='login.html'">Login</button>
+      <button class="auth-btn">Register</button>
+    </div>
+    <div class="profile-dropdown" id="profileDropdown" style="display: none;">
+      <button class="profile-btn">Profile ▼</button>
+      <div class="dropdown-menu">
+        <a href="profile/profile.html">My Profile</a>
+        <a href="feedback.html">Feedback</a>
+        <a href="login.html" id="logoutButton" onclick="logoutUser()">Logout</a>
+      </div>
+    </div>
+    <input type="checkbox" id="dark-toggle" />
+<label for="dark-toggle" class="theme-switch">
+  <span class="sun">☀️</span>
+  <span class="moon">🌙</span>
+</label>
+
+    <div class="menu-toggle" id="menuToggle">☰</div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Empowering Students to Connect, Collaborate & Grow</h1>
+      <p>From challenges to chats—build your academic universe in one place.</p>
+    </div>
+  </section>
+
+  <section class="section" id="about">
+    <h2>About</h2>
+    <p>
+      Student Sphere is a dynamic platform created to empower students in their academic and personal growth journeys. Whether you're collaborating on projects, sharpening your skills, or competing in friendly challenges, Student Sphere brings everything you need into one powerful hub.
+    </p>
+    <br />
+    <p>
+      From real-time chats and study groups to skill trackers, resume builders, and event planners, our features are crafted to support every aspect of student life. Our mission is to connect learners across disciplines and institutions, fostering a vibrant, supportive, and productive student community.
+    </p>
+    <br />
+    <p>
+      With a sleek, responsive design and a focus on ease-of-use, Student Sphere ensures that learning and collaboration stay engaging and accessible—anytime, anywhere.
+    </p>
+  </section>
+  
+
+  <section class="section" id="features">
+    <h2>Features</h2>
+    <div class="features-grid">
+      <a href="Chat/chat.html" class="feature-card">
+        <i class="fas fa-comments feature-icon"></i>
+        <p>ChatRoom</p>
+      </a>
+      <a href="post/Post.html" class="feature-card">
+        <i class="fas fa-users feature-icon"></i>
+        <p>Post</p>
+      </a>
+      <a href="MiniChallenges/challenge.html" class="feature-card">
+        <i class="fas fa-bolt feature-icon"></i>
+        <p>Mini Challenges</p>
+      </a>
+      <a href="MiniChallenges/leaderboad.html" class="feature-card">
+        <i class="fas fa-trophy feature-icon"></i>
+        <p>Leaderboard</p>
+      </a>
+      <a href="eventplanner/event-planner.html" class="feature-card">
+        <i class="fas fa-calendar-alt feature-icon"></i>
+        <p>Event Planner</p>
+      </a>
+      <a href="skill-tracker/skill-tracker.html" class="feature-card">
+        <i class="fas fa-chart-line feature-icon"></i>
+        <p>Skill Tracker</p>
+      </a>
+      <a href="resume-builder/resume-builder.html" class="feature-card">
+        <i class="fas fa-file-alt feature-icon"></i>
+        <p>Resume Builder</p>
+        <a href="notes/notes.html" class="feature-card">
+            <i class="fas fa-book feature-icon"></i>
+          <p>Notes/Organiser</p>
+      </a>
+    </div>
+  </section>
+  
+
+  <section class="section" id="contact">
+    <h3>Made with ❤️ for Students </h3>
+  </section>
+
+  <footer>
+    <p>© 2025 Student Sphere. All rights reserved.</p>
+  </footer>
+
+  <div id="toast" class="toast hidden">You have been logged out successfully.</div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getDatabase } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB6vh2QCsxMHU9rQ99GxSEFDkT7cgnrduQ",
+      authDomain: "student-sphere-bb396.firebaseapp.com",
+      databaseURL: "https://student-sphere-bb396-default-rtdb.firebaseio.com",
+      projectId: "student-sphere-bb396",
+      storageBucket: "student-sphere-bb396.appspot.com",
+      messagingSenderId: "1059223650747",
+      appId: "1:1059223650747:web:36d989ca27354a7bc1449e",
+      measurementId: "G-5Q5H5ZJF09"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    console.log("Firebase initialized successfully!");
+  </script>
+  <script type="module" src="script.js"></script>
+</body>
+</html>
