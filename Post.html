@@ -21,9 +21,9 @@
     <div class="profile-dropdown" id="profileDropdown" style="display: none;">
       <button class="profile-btn">Profile ▼</button>
       <div class="dropdown-menu">
-        <a href="../profile/profile.html">My Profile</a>
-        <a href="../feedback.html">Feedback</a>
-        <a href="../login.html" onclick="logout()">Logout</a>
+        <a href="profile.html">My Profile</a>
+        <a href="feedback.html">Feedback</a>
+        <a href="login.html" onclick="logout()">Logout</a>
       </div>
     </div>
     
@@ -94,8 +94,6 @@
       const postsFeed = document.getElementById("postsFeed");
       const imagePreview = document.createElement("img");
       imagePreview.classList.add("image-preview");
-
-      // Show/hide elements based on login state
       if (isLoggedIn) {
         authButtons.style.display = "none";
         profileDropdown.style.display = "block";
