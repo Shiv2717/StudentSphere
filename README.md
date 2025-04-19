@@ -5,16 +5,33 @@ StudentSphere is a decentralized social hub tailored specifically for college st
 ---
 
 # Features
-
 User Authentication (Firebase)
+
 Dark Mode Toggle with Glassmorphism UI
+
 Animated UI using Framer Motion
+
 Profile System
+
 Editable profiles with skill tags
-Interactive Feed Post creation with like, comment, edit, and delete
-Real-Time Chat with a chatroom
-Skills Development Tracker. Set goals, track skill progress in real-time
-Resume Builder, real-time preview, download as PDF
+
+Interactive Feed
+
+Post creation with like, comment
+
+Real-Time Chat
+
+Chatroom
+
+See who joined or left chats, Dark/light toggle
+
+Skills Development Tracker
+
+Set goals, track skill progress in real-time
+
+Resume Builder
+
+Canva-like templates, real-time preview, download as PDF
 
 ---
 
