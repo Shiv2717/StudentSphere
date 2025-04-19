@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🗨️ ChatRoom 💬</title>
+  <link rel="stylesheet" href="chat.css" />
+</head>
+<body>
+    
+  <!-- Join ChatRoom -->
+  <div class="screen join-screen active" id="join-screen">
+    <div class="form">
+      <h2>Join ChatRoom</h2>
+      <input type="text" id="username" placeholder="Enter your username" />
+      <button id="join-btn">Join</button>
+    </div>
+  </div>
+
+  <!-- ChatRoom Main UI -->
+  <div class="screen chat-screen" id="chat-screen">
+    <div class="header">
+      <button id="back-to-menu-btn" onclick="window.location.href='../../index.html'">⬅ Back to Menu</button>
+      <h2>ChatRoom</h2>
+      <button id="toggle-theme">🌞</button>
+      <button id="exit-btn">Exit</button>
+    </div>
+    <div class="messages" id="messages"></div>
+    <div class="input-box">
+      <input type="text" id="message-input" placeholder="Type a message..." />
+      <button id="send-btn">Send</button>
+    </div>
+  </div>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyB6vh2QCsxMHU9rQ99GxSEFDkT7cgnrduQ",
+      authDomain: "student-sphere-bb396.firebaseapp.com",
+      databaseURL: "https://student-sphere-bb396-default-rtdb.firebaseio.com",
+      projectId: "student-sphere-bb396",
+      storageBucket: "student-sphere-bb396.appspot.com",
+      messagingSenderId: "1059223650747",
+      appId: "1:1059223650747:web:36d989ca27354a7bc1449e"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const joinScreen = document.getElementById("join-screen");
+    const chatScreen = document.getElementById("chat-screen");
+    const joinBtn = document.getElementById("join-btn");
+    const usernameInput = document.getElementById("username");
+    const messageInput = document.getElementById("message-input");
+    const sendBtn = document.getElementById("send-btn");
+    const messagesDiv = document.getElementById("messages");
+    const exitBtn = document.getElementById("exit-btn");
+    const toggleBtn = document.getElementById("toggle-theme");
+
+    let username = "";
+
+    joinBtn.addEventListener("click", () => {
+      const value = usernameInput.value.trim();
+      if (value !== "") {
+        username = value;
+        const participantRef = db.ref("participants").push();
+        participantRef.set({ username, id: participantRef.key });
+        db.ref("messages").push({
+          username: "System",
+          message: `${username} joined the conversation`,
+          timestamp: Date.now(),
+          type: "system"
+        });
+
+        joinScreen.classList.remove("active");
+        chatScreen.classList.add("active");
+      }
+    });
+
+    sendBtn.addEventListener("click", sendMessage);
+    messageInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") sendMessage();
+    });
+
+    function sendMessage() {
+      const msg = messageInput.value.trim();
+      if (msg !== "") {
+        const msgObj = {
+          username: username,
+          message: msg,
+          timestamp: Date.now()
+        };
+        db.ref("messages").push(msgObj);
+        messageInput.value = "";
+      }
+    }
+    function displayMessage({ username: sender, message, type }) {
+      const msgElement = document.createElement("div");
+
+      if (type === "system") {
+        msgElement.classList.add("system-message");
+        msgElement.textContent = message;
+      } else {
+        const isOwnMessage = sender === username; 
+        msgElement.classList.add("message", isOwnMessage ? "own" : "other");
+
+        msgElement.innerHTML = `
+          <div class="bubble">
+            <span class="user">${sender}:</span>
+            <span class="text">${message}</span>
+          </div>`;
+      }
+
+      messagesDiv.appendChild(msgElement);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight; 
+      }
+
+    db.ref("messages").on("child_added", (snapshot) => {
+      const msg = snapshot.val();
+      displayMessage(msg);
+    });
+
+
+    exitBtn.addEventListener("click", () => {
+      db.ref("participants")
+        .orderByChild("username")
+        .equalTo(username)
+        .once("value", (snapshot) => {
+          snapshot.forEach((childSnapshot) => {
+            childSnapshot.ref.remove();
+          });
+        });
+
+      db.ref("messages").push({
+        username: "System",
+        message: `${username} left the conversation`,
+        timestamp: Date.now(),
+        type: "system"
+      });
+
+      username = "";
+      usernameInput.value = "";
+      messageInput.value = "";
+      messagesDiv.innerHTML = "";
+      chatScreen.classList.remove("active");
+      joinScreen.classList.add("active");
+    });
+
+    toggleBtn.addEventListener("click", () => {
+      document.body.classList.toggle("light-theme");
+      toggleBtn.textContent =
+        document.body.classList.contains("light-theme") ? "🌙" : "🌞";
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const joinScreen = document.querySelector(".join-screen");
+      const chatScreen = document.querySelector(".chat-screen");
+      const joinButton = document.querySelector("#joinButton"); 
+      const exitButton = document.querySelector("#exitButton"); 
+
+     
+      joinButton.addEventListener("click", () => {
+        joinScreen.classList.remove("active");
+        chatScreen.classList.add("active");
+      });
+
+      exitButton.addEventListener("click", () => {
+        chatScreen.classList.remove("active");
+        joinScreen.classList.add("active");
+      });
+    });
+  </script>
+</body>
+</html>

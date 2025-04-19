@@ -1,0 +1,236 @@
+/* Reset & Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  body {
+    background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+    color: #ffffff;
+    line-height: 1.6;
+    min-height: 100vh;
+    padding-bottom: 2rem;
+  }
+  
+  a {
+    color: #4fc3f7;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  a:hover {
+    color: #ffffff;
+  }
+  
+  /* Header */
+  .header {
+    background: rgba(18, 18, 18, 0.9);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid #444;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+  }
+  
+  .header h1 {
+    color: #ffffff;
+    font-size: 2rem;
+    font-weight: bold;
+    text-shadow: 0 0 5px #4fc3f7;
+  }
+  
+  .nav-link {
+    margin-left: 1rem;
+    color: #cfcfcf;
+    font-weight: 500;
+    position: relative;
+  }
+  
+  .nav-link:hover {
+    color: #4fc3f7;
+    text-shadow: 0 0 8px #4fc3f7;
+  }
+  
+  .profile-container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 1rem 2rem;
+  }
+  
+  /* Profile Header */
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+  
+  .profile-pic-wrapper {
+    position: relative;
+    text-align: center;
+  }
+  
+  .profile-pic {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #4fc3f7;
+    box-shadow: 0 0 12px #4fc3f7aa;
+    transition: transform 0.3s ease;
+  }
+  .profile-pic:hover {
+    transform: scale(1.05);
+  }
+  
+  #pic-input {
+    margin-top: 0.5rem;
+    color: #ccc;
+  }
+  
+  .edit-btn {
+    background: linear-gradient(to right, #4fc3f7, #00bcd4);
+    color: #000;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: all 0.3s ease;
+  }
+  .edit-btn:hover {
+    background: #00acc1;
+    transform: scale(1.05);
+  }
+  
+  /* Section Styling */
+  .profile-section {
+    background: #1e1e1e;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 20px;
+    box-shadow: 8px 8px 20px #0d0d0d, -8px -8px 20px #2a2a2a;
+    transition: transform 0.3s;
+  }
+  .profile-section:hover {
+    transform: translateY(-5px);
+  }
+  
+  .profile-section h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.8rem;
+    color: #4fc3f7;
+    border-bottom: 1px solid #4fc3f7;
+    padding-bottom: 0.4rem;
+  }
+  
+  /* List */
+  ul {
+    list-style-type: disc;
+    padding-left: 1.2rem;
+  }
+  ul li {
+    margin-bottom: 0.3rem;
+  }
+  
+ 
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(12, 12, 12, 0.95);
+    backdrop-filter: blur(8px);
+    padding-top: 60px;
+  }
+  
+  .modal-content {
+    background: rgba(30, 30, 30, 0.85);
+    margin: auto;
+    padding: 2rem;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 0 20px #4fc3f7aa;
+  }
+  
+  .close-btn {
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    color: #f44336;
+    cursor: pointer;
+  }
+  .close-btn:hover {
+    color: #ff6659;
+  }
+  
+  /* Tabs */
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 0.6rem;
+    border: none;
+    border-radius: 10px;
+    background-color: #333;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .tab-btn:hover,
+  .tab-btn.active {
+    background-color: #4fc3f7;
+    color: #121212;
+    box-shadow: 0 0 8px #4fc3f7aa;
+  }
+  
+  .tab-content {
+    margin-top: 1rem;
+  }
+  .tab-content input,
+  .tab-content textarea {
+    width: 100%;
+    padding: 0.6rem;
+    background-color: #2a2a2a;
+    color: #fff;
+    border: 1px solid #555;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+  }
+  
+  /* File Inputs */
+  input[type="file"] {
+    background-color: #2a2a2a;
+    color: #ccc;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 0.5rem;
+    cursor: pointer;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .profile-header {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .tabs {
+      flex-direction: column;
+    }
+  }
+  

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Sphere - Profile</title>
+  <link rel="stylesheet" href="profile.css" />
+</head>
+<body>
+
+  <header class="header">
+    <h1>Student Sphere</h1>
+    <nav>
+        <a href="../index.html" class="nav-link">
+          <span>&#x1F4C8;</span> Home
+        </a>
+        <a href="../login.html" class="nav-link" onclick="logoutUser()">
+          <span>&#x1F512;</span> Logout
+        </a>
+      </nav>
+  </header>
+
+  <main class="profile-container">
+
+    <!-- Profile Header -->
+    <section class="profile-header">
+      <div class="profile-pic-wrapper">
+        <img id="profile-pic" src="https://via.placeholder.com/150" alt="Profile Picture" class="profile-pic">
+        <input type="file" id="pic-input" accept="image/*">
+      </div>      
+      <div>
+        <h2 class="user-name">John Doe</h2>
+        <p class="user-headline">ECE Student | Web Developer</p>
+        <button class="edit-btn" onclick="openModal()">Edit Profile</button>
+      </div>
+    </section>
+
+    <!-- Profile Sections -->
+    <section class="profile-section">
+      <h3>About Me</h3>
+      <p id="about">Passionate about technology and building real-world projects.</p>
+    </section>
+
+    <section id="skills-section" class="profile-section">
+      <h3>Skills</h3>
+      <ul id="skills">
+        <li>HTML</li>
+        <li>CSS</li>
+        <li>JavaScript</li>
+        <li>Python</li>
+      </ul>
+    </section>
+
+    <section id="projects-section" class="profile-section">
+      <h3>Projects</h3>
+      <div id="projects">
+        <ul id="projects-list">
+        <li><p><strong>Resume Builder</strong> – A tool to create resumes with live preview.</p></li>
+        <li><p><strong>Portfolio Website</strong> – A personal website showcasing my projects.</p></li>
+        <li><p><strong>Task Manager App</strong> – A web application to manage daily tasks efficiently.</p></li>
+       </ul>
+      </div>
+    </section>
+      
+    <section id="achievements-section" class="profile-section">
+      <h3>Achievements</h3>
+      <div id="achievements">
+        <ul id="achievements-list">
+        <li><p>Completed AI Internship at XYZ Institute</p></li>
+        <li><p>Won 1st place in Hackathon 2023</p></li>
+        <li><p>Published research paper on Machine Learning</p></li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="contact-info-section" class="profile-section">
+      <h3>Contact Info</h3>
+      <p>Email: <span id="email-display">johndoe@example.com</span></p>
+      <p>Phone: <span id="phone-display">+91-9876543210</span></p>
+      <p>
+        LinkedIn: 
+        <a href="https://www.linkedin.com/in/your-profile" target="_blank" id="linkedin-link">View Profile</a>
+      </p>
+      <p>
+        GitHub: 
+        <a href="https://github.com/your-username" target="_blank" id="github-link">View Profile</a>
+      </p>
+    </section>
+
+  </main>
+
+  <div class="modal" id="editModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <h2>Edit Profile</h2>
+
+      <form id="edit-profile-form">
+        <div class="tabs">
+          <button type="button" class="tab-btn active" onclick="openTab('about-tab')">About</button>
+          <button type="button" class="tab-btn" onclick="openTab('skills-tab')">Skills</button>
+          <button type="button" class="tab-btn" onclick="openTab('projects-tab')">Projects</button>
+          <button type="button" class="tab-btn" onclick="openTab('achievements-tab')">Achievements</button>
+          <button type="button" class="tab-btn" onclick="openTab('contact-tab')">Contact</button>
+          <button type="button" class="tab-btn" onclick="openTab('name-headline-tab')">Name & Headline</button>
+          
+        </div>
+        
+        <div class="tab-content" id="name-headline-tab" style="display:none;">
+          <label>Name</label>
+          <input type="text" id="edit-name" name="name" value="John Doe">
+          
+          <label>Headline</label>
+          <input type="text" id="edit-headline" name="headline" value="ECE Student | Web Developer">
+        </div>
+
+        <div class="tab-content" id="about-tab">
+          <label>About Me</label>
+          <textarea id="edit-about" name="about">Passionate about technology and building real-world projects.</textarea>
+        </div>
+
+        <div class="tab-content" id="skills-tab" style="display:none;">
+          <label>Skills (comma-separated)</label>
+          <input type="text" id="edit-skills" name="skills" value="HTML, CSS, JavaScript, Python">
+        </div>
+
+        <div class="tab-content" id="projects-tab" style="display:none;">
+          <label>Projects</label>
+          <textarea id="edit-projects" name="projects">Resume Builder – A tool to create resumes with live preview.</textarea>
+          
+          <label>Upload Project PDFs</label>
+          <input type="file" id="project-pdfs" name="project-files" accept="application/pdf" multiple>
+        </div>
+        
+        <div class="tab-content" id="achievements-tab" style="display:none;">
+          <label>Achievements</label>
+          <textarea id="edit-achievements" name="achievements">Completed AI Internship at XYZ Institute</textarea>
+          
+          <label>Upload Achievement PDFs</label>
+          <input type="file" id="achievement-pdfs" name="achievement-files" accept="application/pdf" multiple>
+        </div>
+
+        <div class="tab-content" id="contact-tab" style="display:none;">
+          <label>Email</label>
+          <input type="email" id="edit-email" name="email" value="johndoe@example.com">
+          <label>Phone</label>
+          <input type="text" id="edit-phone" name="phone" value="+91-9876543210">
+
+          <label>LinkedIn URL</label>
+          <input type="url" id="edit-linkedin" name="linkedin" value="https://www.linkedin.com/in/your-profile">
+          
+          <label>GitHub URL</label>
+          <input type="url" id="edit-github" name="github" value="https://github.com/your-username">
+      
+        </div>
+
+        <button type="submit" class="edit-btn">Save All Changes</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+  <script>
+const firebaseConfig = {
+  apiKey: "AIzaSyB6vh2QCsxMHU9rQ99GxSEFDkT7cgnrduQ",
+  authDomain: "student-sphere-bb396.firebaseapp.com",
+  databaseURL: "https://student-sphere-bb396-default-rtdb.firebaseio.com",
+  projectId: "student-sphere-bb396",
+  storageBucket: "student-sphere-bb396.appspot.com",
+  messagingSenderId: "1059223650747",
+  appId: "1:1059223650747:web:36d989ca27354a7bc1449e",
+  measurementId: "G-5Q5H5ZJF09"
+};
+
+let app;
+try {
+  app = firebase.initializeApp(firebaseConfig);
+} catch (error) {
+  console.error("Firebase initialization error:", error);
+  alert("Failed to initialize Firebase. Please try again later.");
+}
+const db = firebase.database(app);
+  </script>
+
+  <script src="profile.js"></script>
+</body>
+</html>

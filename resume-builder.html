@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudentSphere Resume Builder</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+    body { font-family: 'Poppins', sans-serif; }
+    .fade-in { animation: fadeIn 0.5s ease-in; }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .profile-img { max-width: 100px; max-height: 100px; object-fit: cover; border-radius: 50%; }
+    .progress-bar { height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden; }
+    .progress { height: 100%; background: #3b82f6; transition: width 0.3s; }
+    .sidebar { min-height: 100%; background: linear-gradient(135deg, #ff6b6b, #4ecdc4); }
+    .fixed {
+      position: fixed;
+    }
+    .bottom-4 {
+      bottom: 1rem;
+    }
+    .right-4 {
+      right: 1rem;
+    }
+    .bg-blue-600 {
+      background-color: #2563eb;
+    }
+    .hover\:bg-blue-700:hover {
+      background-color: #1d4ed8;
+    }
+    .text-white {
+      color: white;
+    }
+    .px-4 {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+    .py-2 {
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
+    }
+    .rounded-lg {
+      border-radius: 0.5rem;
+    }
+    .shadow-lg {
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .transition-all {
+      transition: all 0.2s ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-200 min-h-screen">
+  <div class="container mx-auto p-6 flex flex-col md:flex-row gap-6">
+    <!-- Template Gallery & Editor -->
+    <div class="w-full md:w-1/3 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6">Select a Template</h2>
+      <div class="grid grid-cols-1 gap-4 mb-6">
+        <div class="bg-gradient-to-r from-blue-100 to-blue-200 p-4 rounded-lg cursor-pointer hover:scale-105 transition-transform" onclick="selectTemplate('template1')">
+          <h3 class="font-medium text-gray-700">Modern Elegance</h3>
+          <p class="text-sm text-gray-500">Sleek and professional</p>
+        </div>
+        <div class="bg-gradient-to-r from-green-100 to-green-200 p-4 rounded-lg cursor-pointer hover:scale-105 transition-transform" onclick="selectTemplate('template2')">
+          <h3 class="font-medium text-gray-700">Minimalist Vibe</h3>
+          <p class="text-sm text-gray-500">Clean and airy</p>
+        </div>
+        <div class="bg-gradient-to-r from-purple-100 to-purple-200 p-4 rounded-lg cursor-pointer hover:scale-105 transition-transform" onclick="selectTemplate('template3')">
+          <h3 class="font-medium text-gray-700">Creative Edge</h3>
+          <p class="text-sm text-gray-500">Bold and artistic</p>
+        </div>
+        <div class="bg-gradient-to-r from-teal-100 to-teal-200 p-4 rounded-lg cursor-pointer hover:scale-105 transition-transform" onclick="selectTemplate('template4')">
+          <h3 class="font-medium text-gray-700">Tech Grid</h3>
+          <p class="text-sm text-gray-500">Structured and techy</p>
+        </div>
+        <div class="bg-gradient-to-r from-yellow-100 to-yellow-200 p-4 rounded-lg cursor-pointer hover:scale-105 transition-transform" onclick="selectTemplate('template5')">
+          <h3 class="font-medium text-gray-700">Infographic Style</h3>
+          <p class="text-sm text-gray-500">Visual and dynamic</p>
+        </div>
+        <div class="bg-gradient-to-r from-indigo-100 to-indigo-200 p-4 rounded-lg cursor-pointer hover:scale-105 transition-transform" onclick="selectTemplate('template6')">
+          <h3 class="font-medium text-gray-700">Academic Focus</h3>
+          <p class="text-sm text-gray-500">Education-first</p>
+        </div>
+        <div class="bg-gradient-to-r from-red-100 to-red-200 p-4 rounded-lg cursor-pointer hover:scale-105 transition-transform" onclick="selectTemplate('template7')">
+          <h3 class="font-medium text-gray-700">Bold Statement</h3>
+          <p class="text-sm text-gray-500">Striking and unique</p>
+        </div>
+      </div>
+      <h2 class="text-2xl font-semibold text-gray-800 mt-6 mb-6">Customize Your Resume</h2>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Full Name</label>
+          <input id="name" type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="John Doe" oninput="updateResume()">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Email</label>
+          <input id="email" type="email" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="john.doe@example.com" oninput="updateResume()">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Education</label>
+          <textarea id="education" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="B.S. ECE, Dr. B.C. Roy Engg. College, 2023-2027" oninput="updateResume()"></textarea>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Experience</label>
+          <textarea id="experience" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Intern, XYZ Tech, Summer 2025" oninput="updateResume()"></textarea>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Projects</label>
+          <textarea id="projects" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Smart Home Automation, Wearable Health Monitor" oninput="updateResume()"></textarea>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Certifications</label>
+          <textarea id="certifications" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Python Basics, IoT Fundamentals" oninput="updateResume()"></textarea>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Extracurriculars</label>
+          <textarea id="extracurriculars" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="IEEE Member, Hackathon Participant" oninput="updateResume()"></textarea>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">GPA</label>
+          <input id="gpa" type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="7.8/10" oninput="updateResume()">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Profile Photo</label>
+          <input id="photo" type="file" accept="image/*" class="w-full p-2 border border-gray-300 rounded-lg" onchange="updatePhoto()">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Accent Color</label>
+          <input id="color" type="color" value="#3b82f6" class="w-full h-10 border border-gray-300 rounded-lg cursor-pointer" oninput="updateResume()">
+        </div>
+        <button onclick="downloadPDF()" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white p-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200">Download PDF</button>
+      </div>
+    </div>
+    <!-- Resume Preview -->
+    <div class="w-full md:w-2/3 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6">Resume Preview</h2>
+      <div id="resume-preview" class="border border-gray-200 p-6 rounded-lg bg-white fade-in" style="width: 8.5in; min-height: 11in;">
+        <!-- Template 1: Modern Elegance -->
+        <div id="template1" class="">
+          <div id="resume-header" class="text-center mb-6 pb-4 border-b-4 border-blue-500 flex justify-center items-center gap-4">
+            <img id="profile-img" src="" alt="Profile" class="profile-img hidden">
+            <div>
+              <h1 id="resume-name" class="text-4xl font-bold text-blue-800">John Doe</h1>
+              <p id="resume-email" class="text-lg text-gray-600 mt-2">john.doe@example.com</p>
+            </div>
+          </div>
+          <div class="mb-6">
+            <h2 class="text-2xl font-semibold text-blue-700 border-b-2 border-blue-300 pb-2">Education</h2>
+            <p id="resume-education" class="mt-4 text-gray-700 leading-relaxed">B.S. ECE, Dr. B.C. Roy Engg. College, 2023-2027</p>
+            <p id="resume-gpa" class="mt-2 text-gray-600 italic">GPA: 7.8/10</p>
+          </div>
+          <div class="mb-6">
+            <h2 class="text-2xl font-semibold text-blue-700 border-b-2 border-blue-300 pb-2">Experience</h2>
+            <p id="resume-experience" class="mt-4 text-gray-700 leading-relaxed">Intern, XYZ Tech, Summer 2025</p>
+          </div>
+          <div class="mb-6">
+            <h2 class="text-2xl font-semibold text-blue-700 border-b-2 border-blue-300 pb-2">Projects</h2>
+            <p id="resume-projects" class="mt-4 text-gray-700 leading-relaxed">Smart Home Automation, Wearable Health Monitor</p>
+          </div>
+          <div class="mb-6">
+            <h2 class="text-2xl font-semibold text-blue-700 border-b-2 border-blue-300 pb-2">Certifications</h2>
+            <p id="resume-certifications" class="mt-4 text-gray-700 leading-relaxed">Python Basics, IoT Fundamentals</p>
+          </div>
+          <div class="mb-6">
+            <h2 class="text-2xl font-semibold text-blue-700 border-b-2 border-blue-300 pb-2">Extracurriculars</h2>
+            <p id="resume-extracurriculars" class="mt-4 text-gray-700 leading-relaxed">IEEE Member, Hackathon Participant</p>
+          </div>
+          <div>
+            <h2 class="text-2xl font-semibold text-blue-700 border-b-2 border-blue-300 pb-2">Skills</h2>
+            <p id="resume-skills" class="mt-4 text-gray-700 leading-relaxed">Python, JavaScript, SQL</p>
+          </div>
+        </div>
+        <!-- Template 2: Minimalist Vibe -->
+        <div id="template2" class="hidden">
+          <div class="text-center mb-8 py-6 bg-gradient-to-b from-green-50 to-white border-y-2 border-green-200">
+            <img id="profile-img-min" src="" alt="Profile" class="profile-img hidden mx-auto mb-4">
+            <h1 id="resume-name-min" class="text-3xl font-semibold text-green-800">John Doe</h1>
+            <p id="resume-email-min" class="text-base text-gray-600 mt-1">john.doe@example.com</p>
+          </div>
+          <div class="space-y-6 mt-6">
+            <div>
+              <h2 class="text-xl font-medium text-green-700 underline">Education</h2>
+              <p id="resume-education-min" class="mt-2 text-gray-700">B.S. ECE, Dr. B.C. Roy Engg. College, 2023-2027</p>
+              <p id="resume-gpa-min" class="mt-1 text-gray-600 italic">GPA: 7.8/10</p>
+            </div>
+            <div>
+              <h2 class="text-xl font-medium text-green-700 underline">Experience</h2>
+              <p id="resume-experience-min" class="mt-2 text-gray-700">Intern, XYZ Tech, Summer 2025</p>
+            </div>
+            <div>
+              <h2 class="text-xl font-medium text-green-700 underline">Projects</h2>
+              <p id="resume-projects-min" class="mt-2 text-gray-700">Smart Home Automation, Wearable Health Monitor</p>
+            </div>
+            <div>
+              <h2 class="text-xl font-medium text-green-700 underline">Certifications</h2>
+              <p id="resume-certifications-min" class="mt-2 text-gray-700">Python Basics, IoT Fundamentals</p>
+            </div>
+            <div>
+              <h2 class="text-xl font-medium text-green-700 underline">Extracurriculars</h2>
+              <p id="resume-extracurriculars-min" class="mt-2 text-gray-700">IEEE Member, Hackathon Participant</p>
+            </div>
+            <div>
+              <h2 class="text-xl font-medium text-green-700 underline">Skills</h2>
+              <p id="resume-skills-min" class="mt-2 text-gray-700">Python, JavaScript, SQL</p>
+            </div>
+          </div>
+        </div>
+        <!-- Template 3: Creative Edge -->
+        <div id="template3" class="hidden">
+          <div class="text-right mb-6 pb-4 border-b-4 border-purple-400 bg-purple-50 p-4 rounded-tl-3xl">
+            <img id="profile-img-cre" src="" alt="Profile" class="profile-img hidden float-left ml-4 mt-2">
+            <h1 id="resume-name-cre" class="text-4xl font-bold italic text-purple-900">John Doe</h1>
+            <p id="resume-email-cre" class="text-lg text-gray-600 mt-2">john.doe@example.com</p>
+          </div>
+          <div class="space-y-6 pl-6">
+            <div class="border-l-4 border-purple-300 pl-4">
+              <h2 class="text-2xl font-semibold text-purple-800">Education</h2>
+              <p id="resume-education-cre" class="mt-2 text-gray-700 leading-relaxed">B.S. ECE, Dr. B.C. Roy Engg. College, 2023-2027</p>
+              <p id="resume-gpa-cre" class="mt-1 text-gray-600 italic">GPA: 7.8/10</p>
+            </div>
+            <div class="border-l-4 border-purple-300 pl-4">
+              <h2 class="text-2xl font-semibold text-purple-800">Experience</h2>
+              <p id="resume-experience-cre" class="mt-2 text-gray-700 leading-relaxed">Intern, XYZ Tech, Summer 2025</p>
+            </div>
+            <div class="border-l-4 border-purple-300 pl-4">
+              <h2 class="text-2xl font-semibold text-purple-800">Projects</h2>
+              <p id="resume-projects-cre" class="mt-2 text-gray-700 leading-relaxed">Smart Home Automation, Wearable Health Monitor</p>
+            </div>
+            <div class="border-l-4 border-purple-300 pl-4">
+              <h2 class="text-2xl font-semibold text-purple-800">Certifications</h2>
+              <p id="resume-certifications-cre" class="mt-2 text-gray-700 leading-relaxed">Python Basics, IoT Fundamentals</p>
+            </div>
+            <div class="border-l-4 border-purple-300 pl-4">
+              <h2 class="text-2xl font-semibold text-purple-800">Extracurriculars</h2>
+              <p id="resume-extracurriculars-cre" class="mt-2 text-gray-700 leading-relaxed">IEEE Member, Hackathon Participant</p>
+            </div>
+            <div class="border-l-4 border-purple-300 pl-4">
+              <h2 class="text-2xl font-semibold text-purple-800">Skills</h2>
+              <p id="resume-skills-cre" class="mt-2 text-gray-700 leading-relaxed">Python, JavaScript, SQL</p>
+            </div>
+          </div>
+        </div>
+        <!-- Template 4: Tech Grid -->
+        <div id="template4" class="hidden">
+          <div class="text-center mb-6 pb-4 border-b-4 border-teal-600 bg-teal-50 p-4 rounded-bl-3xl">
+            <img id="profile-img-grid" src="" alt="Profile" class="profile-img hidden">
+            <h1 id="resume-name-grid" class="text-3xl font-bold text-teal-800">John Doe</h1>
+            <p id="resume-email-grid" class="text-lg text-gray-600 mt-2">john.doe@example.com</p>
+          </div>
+          <div class="grid grid-cols-2 gap-4 text-center">
+            <div class="bg-teal-100 p-4 rounded-lg shadow">
+              <h2 class="text-xl font-semibold text-teal-700">Education</h2>
+              <p id="resume-education-grid" class="mt-2 text-gray-700">B.S. ECE, Dr. B.C. Roy Engg. College, 2023-2027</p>
+              <p id="resume-gpa-grid" class="mt-1 text-gray-600 italic">GPA: 7.8/10</p>
+            </div>
+            <div class="bg-teal-100 p-4 rounded-lg shadow">
+              <h2 class="text-xl font-semibold text-teal-700">Experience</h2>
+              <p id="resume-experience-grid" class="mt-2 text-gray-700">Intern, XYZ Tech, Summer 2025</p>
+            </div>
+            <div class="bg-teal-100 p-4 rounded-lg shadow">
+              <h2 class="text-xl font-semibold text-teal-700">Projects</h2>
+              <p id="resume-projects-grid" class="mt-2 text-gray-700">Smart Home Automation, Wearable Health Monitor</p>
+            </div>
+            <div class="bg-teal-100 p-4 rounded-lg shadow">
+              <h2 class="text-xl font-semibold text-teal-700">Certifications</h2>
+              <p id="resume-certifications-grid" class="mt-2 text-gray-700">Python Basics, IoT Fundamentals</p>
+            </div>
+            <div class="bg-teal-100 p-4 rounded-lg shadow">
+              <h2 class="text-xl font-semibold text-teal-700">Extracurriculars</h2>
+              <p id="resume-extracurriculars-grid" class="mt-2 text-gray-700">IEEE Member, Hackathon Participant</p>
+            </div>
+            <div class="bg-teal-100 p-4 rounded-lg shadow">
+              <h2 class="text-xl font-semibold text-teal-700">Skills</h2>
+              <p id="resume-skills-grid" class="mt-2 text-gray-700">Python, JavaScript, SQL</p>
+            </div>
+          </div>
+        </div>
+        <!-- Template 5: Infographic Style -->
+        <div id="template5" class="hidden">
+          <div class="text-center mb-6 pb-4 border-b-4 border-yellow-500 bg-yellow-50 p-4 rounded-tr-3xl">
+            <h1 id="resume-name-info" class="text-3xl font-bold text-yellow-800">John Doe</h1>
+            <p id="resume-email-info" class="text-lg text-gray-600 mt-2">john.doe@example.com</p>
+          </div>
+          <div class="space-y-6">
+            <div>
+              <h2 class="text-xl font-semibold text-yellow-700">Education</h2>
+              <p id="resume-education-info" class="mt-2 text-gray-700">B.S. ECE, Dr. B.C. Roy Engg. College, 2023-2027</p>
+              <div class="progress-bar mt-2">
+                <div id="progress-gpa-info" class="progress" style="width: 78%;"></div>
+              </div>
+              <p class="text-sm text-gray-600 mt-1">GPA: 7.8/10</p>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-yellow-700">Experience</h2>
+              <p id="resume-experience-info" class="mt-2 text-gray-700">Intern, XYZ Tech, Summer 2025</p>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-yellow-700">Projects</h2>
+              <p id="resume-projects-info" class="mt-2 text-gray-700">Smart Home Automation, Wearable Health Monitor</p>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-yellow-700">Certifications</h2>
+              <p id="resume-certifications-info" class="mt-2 text-gray-700">Python Basics, IoT Fundamentals</p>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-yellow-700">Extracurriculars</h2>
+              <p id="resume-extracurriculars-info" class="mt-2 text-gray-700">IEEE Member, Hackathon Participant</p>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-yellow-700">Skills</h2>
+              <p id="resume-skills-info" class="mt-2 text-gray-700">Python, JavaScript, SQL</p>
+            </div>
+          </div>
+        </div>
+        <!-- Template 6: Academic Focus -->
+        <div id="template6" class="hidden">
+          <div class="text-center mb-6 pb-4 border-b-4 border-indigo-500 bg-indigo-50 p-4 rounded-br-3xl">
+            <img id="profile-img-acad" src="" alt="Profile" class="profile-img hidden mx-auto mb-4">
+            <h1 id="resume-name-acad" class="text-3xl font-bold text-indigo-800">John Doe</h1>
+            <p id="resume-email-acad" class="text-lg text-gray-600 mt-2">john.doe@example.com</p>
+          </div>
+          <div class="space-y-6">
+            <div class="border-t-2 border-indigo-200 pt-4">
+              <h2 class="text-xl font-semibold text-indigo-700">Education</h2>
+              <p id="resume-education-acad" class="mt-2 text-gray-700">B.S. ECE, Dr. B.C. Roy Engg. College, 2023-2027</p>
+              <p id="resume-gpa-acad" class="mt-1 text-gray-600 italic">GPA: 7.8/10</p>
+            </div>
+            <div class="border-t-2 border-indigo-200 pt-4">
+              <h2 class="text-xl font-semibold text-indigo-700">Certifications</h2>
+              <p id="resume-certifications-acad" class="mt-2 text-gray-700">Python Basics, IoT Fundamentals</p>
+            </div>
+            <div class="border-t-2 border-indigo-200 pt-4">
+              <h2 class="text-xl font-semibold text-indigo-700">Experience</h2>
+              <p id="resume-experience-acad" class="mt-2 text-gray-700">Intern, XYZ Tech, Summer 2025</p>
+            </div>
+            <div class="border-t-2 border-indigo-200 pt-4">
+              <h2 class="text-xl font-semibold text-indigo-700">Projects</h2>
+              <p id="resume-projects-acad" class="mt-2 text-gray-700">Smart Home Automation, Wearable Health Monitor</p>
+            </div>
+            <div class="border-t-2 border-indigo-200 pt-4">
+              <h2 class="text-xl font-semibold text-indigo-700">Extracurriculars</h2>
+              <p id="resume-extracurriculars-acad" class="mt-2 text-gray-700">IEEE Member, Hackathon Participant</p>
+            </div>
+            <div class="border-t-2 border-indigo-200 pt-4">
+              <h2 class="text-xl font-semibold text-indigo-700">Skills</h2>
+              <p id="resume-skills-acad" class="mt-2 text-gray-700">Python, JavaScript, SQL</p>
+            </div>
+          </div>
+        </div>
+        <!-- Template 7: Bold Statement -->
+        <div id="template7" class="hidden">
+          <div class="flex mb-6">
+            <div class="w-1/4 sidebar p-4 text-white">
+              <img id="profile-img-bold" src="" alt="Profile" class="profile-img hidden mx-auto mb-4">
+              <h1 id="resume-name-bold" class="text-xl font-bold">John Doe</h1>
+              <p id="resume-email-bold" class="text-sm mt-2">john.doe@example.com</p>
+            </div>
+            <div class="w-3/4 p-4">
+              <div class="mb-4">
+                <h2 class="text-xl font-bold text-red-700 border-b-4 border-red-300 pb-1">Education</h2>
+                <p id="resume-education-bold" class="mt-2 text-gray-700">B.S. ECE, Dr. B.C. Roy Engg. College, 2023-2027</p>
+                <p id="resume-gpa-bold" class="mt-1 text-gray-600 italic">GPA: 7.8/10</p>
+              </div>
+              <div class="mb-4">
+                <h2 class="text-xl font-bold text-red-700 border-b-4 border-red-300 pb-1">Experience</h2>
+                <p id="resume-experience-bold" class="mt-2 text-gray-700">Intern, XYZ Tech, Summer 2025</p>
+              </div>
+              <div class="mb-4">
+                <h2 class="text-xl font-bold text-red-700 border-b-4 border-red-300 pb-1">Projects</h2>
+                <p id="resume-projects-bold" class="mt-2 text-gray-700">Smart Home Automation, Wearable Health Monitor</p>
+              </div>
+              <div class="mb-4">
+                <h2 class="text-xl font-bold text-red-700 border-b-4 border-red-300 pb-1">Certifications</h2>
+                <p id="resume-certifications-bold" class="mt-2 text-gray-700">Python Basics, IoT Fundamentals</p>
+              </div>
+              <div class="mb-4">
+                <h2 class="text-xl font-bold text-red-700 border-b-4 border-red-300 pb-1">Extracurriculars</h2>
+                <p id="resume-extracurriculars-bold" class="mt-2 text-gray-700">IEEE Member, Hackathon Participant</p>
+              </div>
+              <div>
+                <h2 class="text-xl font-bold text-red-700 border-b-4 border-red-300 pb-1">Skills</h2>
+                <p id="resume-skills-bold" class="mt-2 text-gray-700">Python, JavaScript, SQL</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="fixed bottom-4 right-4">
+    <a href="../index.html" class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition-all">
+      Back to Home
+    </a>
+  </div>
+  <script src="resume.js"></script>
+</body>
+</html>

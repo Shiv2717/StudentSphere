@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Sphere - Posts</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="Post.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <nav id="nav-links">
+      <a href="../index.html">Home</a>
+    </nav>
+    <div class="auth-buttons" id="authButtons" style="display: none;">
+      <button class="auth-btn" onclick="window.location.href='login.html'">Login</button>
+      <button class="auth-btn">Register</button>
+    </div>
+    <div class="profile-dropdown" id="profileDropdown" style="display: none;">
+      <button class="profile-btn">Profile ▼</button>
+      <div class="dropdown-menu">
+        <a href="../profile/profile.html">My Profile</a>
+        <a href="../feedback.html">Feedback</a>
+        <a href="../login.html" onclick="logout()">Logout</a>
+      </div>
+    </div>
+    
+  </header>
+
+  <!-- Post Section -->
+  <section class="section" id="posts">
+    <h2>Share Your Thoughts</h2>
+
+    <!-- Post Form -->
+    <div id="postFormContainer" class="post-form-container" style="display: none;">
+      <form id="postForm" class="post-form">
+        <textarea id="postContent" placeholder="What's on your mind?" rows="4" required></textarea>
+        <div class="form-actions">
+          <label for="postImage" class="file-label">
+            <i class="fas fa-image"></i> Upload Image
+          </label>
+          <input type="file" id="postImage" accept="image/*" hidden />
+        </div>
+        <button type="submit" class="btn-primary">Post</button>
+      </form>
+    </div>
+
+    <!-- Message if not logged in -->
+    <p id="loginMsg" class="login-msg" style="display: none;">
+      Please <a href="login.html">login</a> to create and view posts.
+    </p>
+
+    <!-- Posts Feed -->
+    <div id="postsFeed" class="posts-feed"></div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2025 Student Sphere. All rights reserved.</p>
+  </footer>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyB6vh2QCsxMHU9rQ99GxSEFDkT7cgnrduQ",
+      authDomain: "student-sphere-bb396.firebaseapp.com",
+      databaseURL: "https://student-sphere-bb396-default-rtdb.firebaseio.com",
+      projectId: "student-sphere-bb396",
+      storageBucket: "student-sphere-bb396.firebasestorage.app",
+      messagingSenderId: "1059223650747",
+      appId: "1:1059223650747:web:36d989ca27354a7bc1449e",
+      measurementId: "G-5Q5H5ZJF09"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+  </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (!localStorage.getItem("userId")) {
+        const userId = `user_${Date.now()}`; 
+        localStorage.setItem("userId", userId);
+      }
+
+      const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+      const authButtons = document.getElementById("authButtons");
+      const profileDropdown = document.getElementById("profileDropdown");
+      const postFormContainer = document.getElementById("postFormContainer");
+      const loginMsg = document.getElementById("loginMsg");
+      const postsFeed = document.getElementById("postsFeed");
+      const imagePreview = document.createElement("img");
+      imagePreview.classList.add("image-preview");
+
+      // Show/hide elements based on login state
+      if (isLoggedIn) {
+        authButtons.style.display = "none";
+        profileDropdown.style.display = "block";
+        postFormContainer.style.display = "block";
+        loginMsg.style.display = "none";
+      } else {
+        authButtons.style.display = "flex";
+        profileDropdown.style.display = "none";
+        postFormContainer.style.display = "none";
+        loginMsg.style.display = "block";
+      }
+
+      // logout
+      window.logout = () => {
+        localStorage.setItem("isLoggedIn", "false");
+        window.location.href = "login.html";
+      };
+
+      // image preview
+      const imageInput = document.getElementById("postImage");
+      const postForm = document.getElementById("postForm");
+      const formActions = document.querySelector(".form-actions");
+
+      imageInput.addEventListener("change", (e) => {
+        if (imageInput.files[0]) {
+          imagePreview.src = URL.createObjectURL(imageInput.files[0]);
+          formActions.appendChild(imagePreview);
+        } else {
+          if (imagePreview.parentNode) {
+            imagePreview.parentNode.removeChild(imagePreview);
+          }
+        }
+      });
+
+      // post submission
+      postForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const content = document.getElementById("postContent").value;
+        const imageFile = imageInput.files[0];
+        const postId = db.ref("posts").push().key; 
+        
+        const post = {
+          id: postId,
+          content: content,
+          imageUrl: imageFile ? URL.createObjectURL(imageFile) : null,
+          likes: 0,
+          comments: [],
+          likedBy: [] 
+        };
+
+        // Save the post to Firebase
+        db.ref(`posts/${postId}`).set(post);
+
+        // Reset the form and remove the preview
+        postForm.reset();
+        if (imagePreview.parentNode) {
+          imagePreview.parentNode.removeChild(imagePreview);
+        }
+      });
+
+      // Load posts
+      function loadPosts() {
+        db.ref("posts").on("value", (snapshot) => {
+          postsFeed.innerHTML = ""; // Clear the feed
+          const posts = snapshot.val();
+
+          for (const postId in posts) {
+            const post = posts[postId];
+
+            // Create a post element
+            const postElement = document.createElement("div");
+            postElement.classList.add("post-card");
+
+            // Add text content
+            const textElement = document.createElement("p");
+            textElement.textContent = post.content;
+            postElement.appendChild(textElement);
+
+            // Add image if available
+            if (post.imageUrl) {
+              const img = document.createElement("img");
+              img.src = post.imageUrl;
+              img.classList.add("post-image");
+              postElement.appendChild(img);
+            }
+
+            // Add like and comment buttons
+            const actionsContainer = document.createElement("div");
+            actionsContainer.classList.add("post-actions");
+
+            const likeButton = document.createElement("button");
+            likeButton.classList.add("action-btn");
+            likeButton.innerHTML = `<i class="fas fa-thumbs-up"></i> Like (${post.likes})`;
+            likeButton.addEventListener("click", () => handleLike(postId));
+
+            const commentButton = document.createElement("button");
+            commentButton.classList.add("action-btn");
+            commentButton.innerHTML = '<i class="fas fa-comment"></i> Comment';
+            commentButton.addEventListener("click", () => handleComment(postId));
+
+            actionsContainer.appendChild(likeButton);
+            actionsContainer.appendChild(commentButton);
+            postElement.appendChild(actionsContainer);
+
+            // Add comments section
+            const commentsContainer = document.createElement("div");
+            commentsContainer.classList.add("comments-container");
+
+            if (post.comments) {
+              post.comments.forEach((comment) => {
+                const commentElement = document.createElement("p");
+                commentElement.textContent = comment;
+                commentsContainer.appendChild(commentElement);
+              });
+            }
+
+            postElement.appendChild(commentsContainer);
+            postsFeed.appendChild(postElement);
+          }
+        });
+      }
+
+      // Load posts on page load
+      loadPosts();
+    });
+
+    // Handle like functionality
+    function handleLike(postId) {
+      const userId = localStorage.getItem("userId"); // Replace with the actual user ID or unique identifier
+      if (!userId) {
+        alert("You need to log in to like posts.");
+        return;
+      }
+
+      const postRef = db.ref(`posts/${postId}`);
+      postRef.once("value", (snapshot) => {
+        const post = snapshot.val();
+        const likedBy = post.likedBy || [];
+
+        // Check if the user has already liked the post
+        if (likedBy.includes(userId)) {
+          alert("You have already liked this post.");
+          return;
+        }
+
+        // Update the like count and add the user to the likedBy array
+        const updatedLikes = post.likes + 1;
+        likedBy.push(userId);
+
+        postRef.update({ likes: updatedLikes, likedBy: likedBy });
+      });
+    }
+
+    // Handle comment functionality
+    function handleComment(postId) {
+      const comment = prompt("Enter your comment:");
+      if (comment) {
+        const postRef = db.ref(`posts/${postId}/comments`);
+        postRef.once("value", (snapshot) => {
+          const comments = snapshot.val() || [];
+          comments.push(comment);
+          postRef.set(comments);
+        });
+      }
+    }
+
+    // Apply the saved theme
+    document.addEventListener("DOMContentLoaded", () => {
+      const savedTheme = localStorage.getItem("theme");
+      if (savedTheme === "dark") {
+        document.body.classList.add("dark");
+      } else {
+        document.body.classList.remove("dark");
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Speed Typing Challenge</title>
+  <style>
+    body {
+  background-color: #121212;
+  color: #f0f0f0;
+  font-family: 'Segoe UI', sans-serif;
+  padding: 20px;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+  background: #1e1e1e;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0,0,0,0.6);
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+button {
+  background: #00bfa6;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  background: #00a693;
+}
+
+#sentence {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+}
+
+textarea {
+  width: 100%;
+  height: 120px;
+  padding: 12px;
+  font-size: 16px;
+  background: #2c2c2c;
+  color: white;
+  border-radius: 8px;
+  border: none;
+  margin-bottom: 10px;
+}
+
+.info {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+#result {
+  margin-top: 12px;
+  font-size: 1.1em;
+  text-align: center;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <button onclick="goBack()">⬅ Back</button>
+      <h1>⌨️ Speed Typing Challenge</h1>
+    </header>
+
+    <p id="sentence"></p>
+    <textarea id="inputArea" placeholder="Start typing here..." oninput="startTyping()"></textarea>
+
+    <div class="info">
+      <span>⏱️ Time: <span id="timer">0</span>s</span>
+      <span>✅ Accuracy: <span id="accuracy">100%</span></span>
+    </div>
+
+    <button onclick="submitTyping()">✅ Submit</button>
+    <p id="result"></p>
+  </div>
+
+  <script>
+    const sentences = [
+  "The quick brown fox jumps over the lazy dog.",
+  "JavaScript is fun and powerful.",
+  "Practice makes a programmer perfect.",
+  "Debugging is twice as hard as writing code.",
+  "Clean code is better than clever code."
+];
+
+let selectedSentence = "";
+let startTime;
+let interval;
+
+function startTyping() {
+  if (!startTime) {
+    startTime = new Date();
+    interval = setInterval(updateTimer, 1000);
+  }
+  checkAccuracy();
+}
+
+function updateTimer() {
+  const elapsed = Math.floor((new Date() - startTime) / 1000);
+  document.getElementById("timer").innerText = elapsed;
+}
+
+function checkAccuracy() {
+  const input = document.getElementById("inputArea").value;
+  let correct = 0;
+
+  for (let i = 0; i < input.length; i++) {
+    if (input[i] === selectedSentence[i]) {
+      correct++;
+    }
+  }
+
+  const accuracy = selectedSentence.length
+    ? Math.floor((correct / selectedSentence.length) * 100)
+    : 0;
+
+  document.getElementById("accuracy").innerText = `${accuracy}%`;
+}
+
+function submitTyping() {
+  clearInterval(interval);
+  const input = document.getElementById("inputArea").value;
+  const time = Math.floor((new Date() - startTime) / 1000);
+  const correctChars = [...input].filter((c, i) => c === selectedSentence[i]).length;
+  const accuracy = Math.floor((correctChars / selectedSentence.length) * 100);
+  const wpm = Math.round((input.length / 5) / (time / 60));
+  const xp = Math.floor((accuracy + wpm) / 2);
+
+  document.getElementById("result").innerText =
+    `🏁 Time: ${time}s | Accuracy: ${accuracy}% | WPM: ${wpm} | XP Earned: ${xp}`;
+}
+
+function goBack() {
+  window.location.href = "challenge.html";
+}
+
+function loadSentence() {
+  selectedSentence = sentences[Math.floor(Math.random() * sentences.length)];
+  document.getElementById("sentence").innerText = selectedSentence;
+}
+
+document.addEventListener("DOMContentLoaded", loadSentence);
+
+function updateLeaderboard(game, xpEarned) {
+  let leaderboard = JSON.parse(localStorage.getItem("miniChallengeLeaderboard")) || [];
+  const username = localStorage.getItem("username") || "You";
+  const existing = leaderboard.find(e => e.name === username);
+  if (existing) {
+    existing.xp += xpEarned;
+  } else {
+    leaderboard.push({ name: username, xp: xpEarned });
+  }
+  leaderboard.sort((a, b) => b.xp - a.xp);
+  localStorage.setItem("miniChallengeLeaderboard", JSON.stringify(leaderboard));
+}
+
+
+  </script>
+</body>
+</html>

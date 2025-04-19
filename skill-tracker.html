@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Skill Tracker - Student Sphere</title>
+  <link rel="stylesheet" href="skill.css"/>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+  
+</head>
+<body>
+  <header>
+    <h1>Skill Tracker</h1>
+    <a href="../index.html" class="back-link">← Back to Home</a>
+    <label for="dark-toggle" class="theme-switch">
+      <span class="moon">🌙</span>
+    </label>
+  </header>
+
+  <main>
+    <!-- Skill List Section -->
+    <section id="skill-list-section">
+      <h2>📋 Your Skills</h2>
+      <div id="skill-list">
+        <div class="skill-card">
+          <h3>HTML</h3>
+          <p>Target: Advanced</p>
+          <p>Deadline: 2025-04-18</p>
+          <div class="progress-container">
+            <div class="progress-bar" style="width: 70%;"></div>
+          </div>
+          <button>Mark as Completed</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Goal Section -->
+    <section class="goal-section">
+      <h2>🎯 Set a Skill Goal</h2>
+      <form id="goal-form">
+        <input type="text" id="goal-skill" placeholder="Skill (e.g. HTML)">
+        <input type="text" id="goal-target" placeholder="Target (e.g. Intermediate)">
+        <input type="date" id="goal-deadline" />
+        <button type="button" onclick="addGoal()">Add Goal</button>
+      </form>
+      <ul id="goal-list"></ul>
+    </section>
+
+    <div id="toast" class="toast">Goal added successfully! 🎯</div>
+    <div id="badge-toast" class="badge-toast"></div>
+
+    <!-- Badge Count -->
+    <div class="badge-count" id="badgeCount">Badges: 0</div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="module" src="skill.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Check login state
+      const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+      if (!isLoggedIn) {
+        window.location.href = "../login.html"; // Redirect to login page if not logged in
+      }
+
+      // Apply the saved theme
+      const savedTheme = localStorage.getItem("theme");
+      if (savedTheme === "dark") {
+        document.body.classList.add("dark");
+      } else {
+        document.body.classList.remove("dark");
+      }
+    });
+
+    // Dark/Light Mode Toggle
+    const darkToggle = document.querySelector(".theme-switch");
+    darkToggle.addEventListener("click", () => {
+      document.body.classList.toggle("dark");
+      const theme = document.body.classList.contains("dark") ? "dark" : "light";
+      localStorage.setItem("theme", theme); 
+    });
+  </script>
+</body>
+</html>

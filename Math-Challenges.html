@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Math Puzzles</title>
+  <style>
+    body {
+  background-color: #121212;
+  color: #f0f0f0;
+  font-family: 'Segoe UI', sans-serif;
+  padding: 20px;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+  border-radius: 12px;
+  background: #1f1f1f;
+  box-shadow: 0 0 10px #333;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  margin: 8px 4px;
+  background: #333;
+  color: #fff;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #444;
+}
+
+.difficulty-select {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.question-box {
+  margin: 30px 0;
+  background: #2a2a2a;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.submit-btn {
+  background: #4caf50;
+  width: 100%;
+  font-weight: bold;
+}
+
+#xpEarned {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 1.1em;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <button onclick="goBack()">⬅ Back</button>
+      <h1>🧮 Math Puzzles</h1>
+    </header>
+
+    <section class="difficulty-select">
+      <button onclick="loadQuestions('Easy')">Easy</button>
+      <button onclick="loadQuestions('Medium')">Medium</button>
+      <button onclick="loadQuestions('Hard')">Hard</button>
+    </section>
+
+    <div id="questionArea" class="question-box"></div>
+
+    <button onclick="submitMathChallenge()" class="submit-btn">✅ Submit Challenge</button>
+    <p id="xpEarned"></p>
+  </div>
+
+  <script>
+    const questions = {
+  Easy: [
+    "1. What is 12 + 5?",
+    "2. What is 100 ÷ 10?",
+    "3. What is 3²?"
+  ],
+  Medium: [
+    "1. A car travels 60 km in 1.5 hours. What is the speed?",
+    "2. Simplify: (4x + 3) = 15",
+    "3. Find x: 2x + 4 = 18"
+  ],
+  Hard: [
+    "1. Solve: x² - 4x + 4 = 0",
+    "2. A train 150m long crosses a bridge in 36s at 72 km/h. Find bridge length.",
+    "3. A and B together can do a job in 6 days. A alone in 10. How long B alone?"
+  ]
+};
+
+let currentDifficulty = "Easy";
+
+function loadQuestions(level) {
+  currentDifficulty = level;
+  const box = document.getElementById("questionArea");
+  box.innerHTML = questions[level]
+    .map(q => `<p>${q}</p><input type="text" placeholder="Your answer" /><br/>`)
+    .join("");
+}
+
+function submitMathChallenge() {
+  let xp = 0;
+  if (currentDifficulty === "Easy") xp = 50;
+  else if (currentDifficulty === "Medium") xp = 100;
+  else xp = 150;
+
+  document.getElementById("xpEarned").innerText = `🎉 You earned ${xp} XP!`;
+
+  // Save to leaderboard later if needed
+  // localStorage.setItem("mathXP", xp);
+}
+
+function goBack() {
+  window.location.href = "challenge.html";
+}
+
+function updateLeaderboard(game, xpEarned) {
+  let leaderboard = JSON.parse(localStorage.getItem("miniChallengeLeaderboard")) || [];
+  const username = localStorage.getItem("username") || "You";
+
+  // Check if user already exists
+  const existing = leaderboard.find(e => e.name === username);
+  if (existing) {
+    existing.xp += xpEarned;
+  } else {
+    leaderboard.push({ name: username, xp: xpEarned });
+  }
+
+  // Sort leaderboard by XP
+  leaderboard.sort((a, b) => b.xp - a.xp);
+  localStorage.setItem("miniChallengeLeaderboard", JSON.stringify(leaderboard));
+}
+
+
+  </script>
+</body>
+</html>

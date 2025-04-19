@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Logic Games</title>
+  <style>
+    body {
+  background-color: #121212;
+  color: #e0e0e0;
+  font-family: 'Segoe UI', sans-serif;
+  padding: 20px;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+  background: #1f1f1f;
+  border-radius: 12px;
+  box-shadow: 0 0 10px #333;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  margin: 8px 4px;
+  background: #333;
+  color: #fff;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #444;
+}
+
+.difficulty-select {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.question-box {
+  margin: 30px 0;
+  background: #2a2a2a;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.submit-btn {
+  background: #ff9800;
+  width: 100%;
+  font-weight: bold;
+}
+
+#xpEarned {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 1.1em;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <button onclick="goBack()">⬅ Back</button>
+      <h1>🧠 Logic Games</h1>
+    </header>
+
+    <section class="difficulty-select">
+      <button onclick="loadLogic('Easy')">Easy</button>
+      <button onclick="loadLogic('Medium')">Medium</button>
+      <button onclick="loadLogic('Hard')">Hard</button>
+    </section>
+
+    <div id="logicArea" class="question-box"></div>
+
+    <button onclick="submitLogicChallenge()" class="submit-btn">✅ Submit Challenge</button>
+    <p id="xpEarned"></p>
+  </div>
+
+  <script>
+    const logicChallenges = {
+  Easy: [
+    "🧩 If all bloops are razzies and all razzies are toops, are all bloops definitely toops?",
+    "🔢 What comes next: 2, 4, 8, 16, ?"
+  ],
+  Medium: [
+    "🧠 You have a fox, a chicken, and grain. You must cross a river with one at a time. How do you do it without any being eaten?",
+    "🧮 If five cats can catch five mice in five minutes, how many cats are needed to catch 100 mice in 100 minutes?"
+  ],
+  Hard: [
+    "📊 A man is looking at a picture. Someone asks, 'Who is that?' He replies, 'Brothers and sisters, I have none, but that man's father is my father's son.' Who is in the picture?",
+    "🔍 You enter a room with 3 switches and a closed door. One switch controls a bulb in the next room. You can toggle switches and enter the room only once. How do you find the switch connected to the bulb?"
+  ]
+};
+
+let currentDifficulty = "Easy";
+
+function loadLogic(level) {
+  currentDifficulty = level;
+  const area = document.getElementById("logicArea");
+  area.innerHTML = logicChallenges[level]
+    .map(q => `<p>${q}</p><input type="text" placeholder="Your answer" /><br/>`)
+    .join("");
+}
+
+function submitLogicChallenge() {
+  let xp = currentDifficulty === "Easy" ? 50 :
+           currentDifficulty === "Medium" ? 100 : 150;
+
+  document.getElementById("xpEarned").innerText = `🎉 You earned ${xp} XP!`;
+  updateLeaderboard("Logic", xp);
+  document.getElementById("xpEarned").style.color = "#00c9a7";
+
+}
+
+function goBack() {
+  window.location.href = "challenge.html";
+}
+
+function updateLeaderboard(game, xpEarned) {
+  let leaderboard = JSON.parse(localStorage.getItem("miniChallengeLeaderboard")) || [];
+  const username = localStorage.getItem("username") || "You";
+
+  const existing = leaderboard.find(e => e.name === username);
+  if (existing) {
+    existing.xp += xpEarned;
+  } else {
+    leaderboard.push({ name: username, xp: xpEarned });
+  }
+  leaderboard.sort((a, b) => b.xp - a.xp);
+  localStorage.setItem("miniChallengeLeaderboard", JSON.stringify(leaderboard));
+}
+
+
+  </script>
+</body>
+</html>

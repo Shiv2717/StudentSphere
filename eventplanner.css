@@ -1,0 +1,258 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #121212;
+  color: #e0e0e0;
+  padding: 20px;
+}
+
+body.light-theme {
+  background: #f9f9f9;
+  color: #333;
+}
+
+.main-layout {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.container {
+  flex: 2;
+  max-width: 1000px;
+}
+
+.sidebar {
+  flex: 1;
+  min-width: 250px;
+  max-height: 600px;
+  overflow-y: auto;
+  background: #1e1e1e;
+  padding: 15px;
+  border: 1px solid #333;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+body.light-theme .sidebar {
+  background: #ffffff;
+  border: 1px solid #ddd;
+}
+
+.sidebar h2 {
+  text-align: center;
+  margin-bottom: 10px;
+  color: #ffcc00;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li {
+  background: #2a2a2a;
+  margin: 5px 0;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  border-left: 4px solid #0073b1;
+  color: #e0e0e0;
+}
+
+body.light-theme .sidebar li {
+  background: #f4f4f4;
+  border-left: 4px solid #0073b1;
+  color: #333;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #ffcc00;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+select, button {
+  padding: 8px 10px;
+  background: #1e1e1e;
+  color: #e0e0e0;
+  border: 1px solid #333;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+body.light-theme select, body.light-theme button {
+  background: #ffffff;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+#calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.day-name {
+  font-weight: bold;
+  text-align: center;
+  background: #2a2a2a;
+  padding: 10px;
+  border-radius: 4px;
+  color: #ffcc00;
+}
+
+body.light-theme .day-name {
+  background: #f4f4f4;
+  color: #333;
+}
+
+.cell {
+  background: #1e1e1e;
+  padding: 10px;
+  height: 120px;
+  border: 1px solid #333;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow-y: auto;
+  color: #e0e0e0;
+}
+
+body.light-theme .cell {
+  background: #ffffff;
+  border: 1px solid #ddd;
+  color: #333;
+}
+
+.cell:hover {
+  background: #333;
+}
+
+body.light-theme .cell:hover {
+  background: #f0f0f0;
+}
+
+.cell strong {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.cell .event {
+  font-size: 12px;
+  background: #0073b1;
+  padding: 3px 6px;
+  border-radius: 4px;
+  margin-top: 4px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  color: #fff;
+}
+
+body.light-theme .cell .event {
+  background: #005a8d;
+  color: #fff;
+}
+
+.cell .event:hover {
+  background: #005a8d;
+}
+
+body.light-theme .cell .event:hover {
+  background: #00416d;
+}
+
+.delete-icon {
+  float: right;
+  margin-left: 6px;
+  color: #ff4d4d;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+body.light-theme .delete-icon {
+  color: #ff0000;
+}
+
+#upcomingEventsList {
+  padding: 0;
+  margin-top: 10px;
+}
+
+#upcomingEventsList li {
+  list-style: square;
+  margin-bottom: 5px;
+  color: #ffcc00;
+}
+
+body.light-theme #upcomingEventsList li {
+  color: #0073b1;
+}
+
+.edit-btn, .delete-btn {
+  margin-top: 5px;
+  padding: 5px 10px;
+  font-size: 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background-color: #0073b1;
+  color: #fff;
+}
+
+.edit-btn:hover {
+  background-color: #005a8d;
+}
+
+.delete-btn {
+  background-color: #ff4d4d;
+  color: #fff;
+}
+
+.delete-btn:hover {
+  background-color: #cc0000;
+}
+
+.tag-filters {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.tag-filters button {
+  padding: 8px 12px;
+  background: #0073b1;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.tag-filters button:hover {
+  background: #005a8d;
+}
+
+body.light-theme .tag-filters button {
+  background: #005a8d;
+  color: #fff;
+}
+
+body.light-theme .tag-filters button:hover {
+  background: #00416d;
+}

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mini Challenge Categories</title>
+  <link rel="stylesheet" href="challenge.css" />
+  <style>
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: #1e1e1e;
+      color: #f0f0f0;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      width: 80%;
+      max-width: 400px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+    }
+
+    .modal-content h3 {
+      margin-bottom: 10px;
+    }
+
+    .close-btn {
+      background: #00c853;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .close-btn:hover {
+      background: #009624;
+    }
+  </style>
+</head>
+<body>
+  <a href="../index.html" class="back-link back-link-btn">← Back to Home</a>
+  <style>
+    .back-link-btn {
+      display: inline-block;
+      text-decoration: none;
+      text-align: center;
+      background: #0f1117;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 20px;
+      font-size: 16px;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .back-link-btn:hover {
+      background: #ce603b;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 15px rgba(206, 96, 59, 0.3);
+    }
+  </style>
+  <section class="challenge-section">
+    <h2 class="section-title">Mini Challenge Categories</h2>
+    <div class="challenge-grid">
+      <div class="challenge-card" onclick="openCategory('math')">
+        <h3>📐 Math Puzzles</h3>
+        <p>Solve rapid math quizzes and sharpen your calculation speed.</p>
+      </div>
+      <div class="challenge-card" onclick="openCategory('logic')">
+        <h3>🧠 Logic Games</h3>
+        <p>Test your reasoning with puzzles and pattern-based games.</p>
+      </div>
+      <div class="challenge-card" onclick="openCategory('programming')">
+        <h3>💻 Programming Quizzes</h3>
+        <p>JS, Python, and more! Answer code questions and snippets.</p>
+      </div>
+      <div class="challenge-card" onclick="openCategory('typing')">
+        <h3>⌨️ Speed Typing</h3>
+        <p>Improve typing speed and accuracy in fun timed challenges.</p>
+      </div>
+      <div class="challenge-card" onclick="openCategory('memory')">
+        <h3>🧩 Memory Games</h3>
+        <p>Boost your short-term memory through fun recall tests.</p>
+      </div>
+    </div>
+  </section>
+  <div id="challengeModal" class="modal">
+    <div class="modal-content">
+      <h3 id="modalTitle">Opening Challenge...</h3>
+      <p id="modalMessage">Please wait while we load your selected challenge.</p>
+      <button class="close-btn" onclick="closeModal()">OK</button>
+    </div>
+  </div>
+
+  <section class="challenge-feed">
+    <h2>📆 Daily / Weekly Challenge Feed</h2>
+    <div class="filter-controls">
+        <input type="text" id="searchInput" placeholder="🔍 Search skill or title..." />
+        <div class="difficulty-filters">
+          <button onclick="filterByDifficulty('All')">All</button>
+          <button onclick="filterByDifficulty('Easy')">Easy</button>
+          <button onclick="filterByDifficulty('Medium')">Medium</button>
+          <button onclick="filterByDifficulty('Hard')">Hard</button>
+        </div>
+      </div>
+    
+    <div class="feed-list" id="challengeFeed"></div>
+    <div class="streak-box">
+      🔥 Streak: <span id="streakCount">0</span> days<br>
+      Bonus XP: <span id="bonusXP">0</span>
+    </div>
+  </section>
+
+  <section class="badge-profile">
+    <h2>
+      <span class="badge-icon">🏅</span> My Badges
+    </h2>
+    <div class="badge-grid" id="badgeContainer">
+      <div class="badge locked" id="brainiac">🧠<br><span>Brainiac</span></div>
+      <div class="badge locked" id="speedster">⚡<br><span>Speedster</span></div>
+      <div class="badge locked" id="streakMaster">🔥<br><span>Streak Master</span></div>
+    </div>
+  </section>
+
+  <!-- Leaderboard Button -->
+  <button id="complete-challenge-btn">Complete Challenge</button>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+      if (!isLoggedIn) {
+          window.location.href = "../../login.html"; 
+      }
+    });
+
+    function openCategory(category) {
+      const modal = document.getElementById("challengeModal");
+      const modalTitle = document.getElementById("modalTitle");
+      const modalMessage = document.getElementById("modalMessage");
+      switch (category) {
+        case 'math':
+          modalTitle.innerText = "📐 Math Puzzles";
+          modalMessage.innerText = "Sharpen your calculation skills with fun math challenges!";
+          break;
+        case 'logic':
+          modalTitle.innerText = "🧠 Logic Games";
+          modalMessage.innerText = "Test your reasoning and solve tricky puzzles!";
+          break;
+        case 'programming':
+          modalTitle.innerText = "💻 Programming Quizzes";
+          modalMessage.innerText = "Answer code-related questions and improve your skills!";
+          break;
+        case 'typing':
+          modalTitle.innerText = "⌨️ Speed Typing";
+          modalMessage.innerText = "Boost your typing speed and accuracy with timed challenges!";
+          break;
+        case 'memory':
+          modalTitle.innerText = "🧩 Memory Games";
+          modalMessage.innerText = "Enhance your memory with fun recall tests!";
+          break;
+        default:
+          modalTitle.innerText = "Opening Challenge...";
+          modalMessage.innerText = "Please wait while we load your selected challenge.";
+      }
+
+      modal.style.display = "flex";
+      setTimeout(() => {
+        window.location.href = `./${category}-challenges.html`; 
+      }, 2000);
+    }
+
+    function closeModal() {
+      const modal = document.getElementById("challengeModal");
+      modal.style.display = "none";
+    }
+  </script>
+
+  <script>
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+  </script>
+
+  <script>
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    const currentUser = localStorage.getItem('currentUser'); 
+    if (!isLoggedIn) {
+        window.location.href = "../../login.html"; 
+    }
+    function completeChallenge(points) {
+      const currentUser = localStorage.getItem("currentUser");
+      if (!currentUser) {
+        alert("User not logged in!");
+        return;
+      }
+
+      const userRef = db.ref(`leaderboard/${currentUser}`);
+      userRef.once("value", (snapshot) => {
+        if (snapshot.exists()) {
+          const currentScore = snapshot.val().score || 0;
+          userRef.update({ score: currentScore + points });
+        } else {
+          userRef.set({ name: currentUser, score: points });
+        }
+      });
+    }
+
+    document.getElementById("complete-challenge-btn").addEventListener("click", () => {
+      completeChallenge(50);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Event Planner - Student Sphere</title>
+  <link rel="stylesheet" href="eventplanner.css" />
+</head>
+<body>
+  <a href="../index.html" class="back-link back-link-btn">← Back to Home</a>
+  <style>
+    .back-link-btn {
+      display: inline-block;
+      text-decoration: none;
+      text-align: center;
+      background: #0f1117;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 20px;
+      font-size: 16px;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .back-link-btn:hover {
+      background: #ce603b;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 15px rgba(206, 96, 59, 0.3);
+    }
+  </style>
+  <div class="main-layout">
+    <div class="container">
+      <h1>📅 Event Planner</h1>
+  
+      <div class="controls">
+        <button onclick="changeMonth(-1)">←</button>
+        <select id="monthSelect"></select>
+        <select id="yearSelect"></select>
+        <button onclick="changeMonth(1)">→</button>
+      </div>
+  
+      <div class="tag-filters">
+        <button onclick="filterByTag('all')">All</button>
+        <button onclick="filterByTag('tech')">Tech</button>
+        <button onclick="filterByTag('cultural')">Cultural</button>
+        <button onclick="filterByTag('academic')">Academic</button>
+      </div>
+  
+      <div id="calendar"></div>
+  
+      <div class="sidebar">
+          <h2>📌 Upcoming Events</h2>
+          <ul id="upcomingEventsList"></ul>
+        </div>
+      </div>
+    <script src="eventplanner.js"></script>
+  </body>
+  </html>
