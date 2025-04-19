@@ -46,8 +46,6 @@
         <button type="submit" class="btn-primary">Post</button>
       </form>
     </div>
-
-    <!-- Message if not logged in -->
     <p id="loginMsg" class="login-msg" style="display: none;">
       Please <a href="login.html">login</a> to create and view posts.
     </p>
@@ -149,43 +147,31 @@
           likedBy: [] 
         };
 
-        // Save the post to Firebase
         db.ref(`posts/${postId}`).set(post);
-
-        // Reset the form and remove the preview
         postForm.reset();
         if (imagePreview.parentNode) {
           imagePreview.parentNode.removeChild(imagePreview);
         }
       });
-
-      // Load posts
       function loadPosts() {
         db.ref("posts").on("value", (snapshot) => {
-          postsFeed.innerHTML = ""; // Clear the feed
+          postsFeed.innerHTML = ""; 
           const posts = snapshot.val();
 
           for (const postId in posts) {
             const post = posts[postId];
 
-            // Create a post element
             const postElement = document.createElement("div");
             postElement.classList.add("post-card");
-
-            // Add text content
             const textElement = document.createElement("p");
             textElement.textContent = post.content;
             postElement.appendChild(textElement);
-
-            // Add image if available
             if (post.imageUrl) {
               const img = document.createElement("img");
               img.src = post.imageUrl;
               img.classList.add("post-image");
               postElement.appendChild(img);
             }
-
-            // Add like and comment buttons
             const actionsContainer = document.createElement("div");
             actionsContainer.classList.add("post-actions");
 
@@ -202,8 +188,6 @@
             actionsContainer.appendChild(likeButton);
             actionsContainer.appendChild(commentButton);
             postElement.appendChild(actionsContainer);
-
-            // Add comments section
             const commentsContainer = document.createElement("div");
             commentsContainer.classList.add("comments-container");
 
@@ -220,14 +204,10 @@
           }
         });
       }
-
-      // Load posts on page load
       loadPosts();
     });
-
-    // Handle like functionality
     function handleLike(postId) {
-      const userId = localStorage.getItem("userId"); // Replace with the actual user ID or unique identifier
+      const userId = localStorage.getItem("userId"); 
       if (!userId) {
         alert("You need to log in to like posts.");
         return;
@@ -237,22 +217,16 @@
       postRef.once("value", (snapshot) => {
         const post = snapshot.val();
         const likedBy = post.likedBy || [];
-
-        // Check if the user has already liked the post
         if (likedBy.includes(userId)) {
           alert("You have already liked this post.");
           return;
         }
-
-        // Update the like count and add the user to the likedBy array
         const updatedLikes = post.likes + 1;
         likedBy.push(userId);
 
         postRef.update({ likes: updatedLikes, likedBy: likedBy });
       });
     }
-
-    // Handle comment functionality
     function handleComment(postId) {
       const comment = prompt("Enter your comment:");
       if (comment) {
@@ -264,8 +238,6 @@
         });
       }
     }
-
-    // Apply the saved theme
     document.addEventListener("DOMContentLoaded", () => {
       const savedTheme = localStorage.getItem("theme");
       if (savedTheme === "dark") {
