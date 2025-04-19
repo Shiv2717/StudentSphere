@@ -207,15 +207,16 @@ function openModal() {
   }
 
   function saveProfileData(uid, profileData) {
-    const profileRef = db.ref(`profiles/${uid}`);
-    profileRef.set(profileData)
-      .then(() => {
-        console.log("Profile data saved successfully!");
-      })
-      .catch((error) => {
-        console.error("Error saving profile data:", error);
-      });
-  }
+  const profileRef = db.ref(`profiles/${uid}`);
+  profileRef.set(profileData)
+    .then(() => {
+      console.log("Profile data saved successfully!");
+      loadProfileData(uid); 
+    })
+    .catch((error) => {
+      console.error("Error saving profile data:", error);
+    });
+}
 
   const profileData = {
     name: "John Doe",
