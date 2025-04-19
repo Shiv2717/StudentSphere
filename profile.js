@@ -13,84 +13,85 @@ function openModal() {
     document.querySelector(`.tab-btn[onclick*="${tabId}"]`).classList.add('active');
   }
   
-
-  function loadProfileData() {
-    db.ref('users/profile').once('value')
+  function populateProfile(profileData) {
+    if (profileData) {
+      document.getElementById('profile-pic').src = profileData.profilePic || 'https://via.placeholder.com/150';
+      document.querySelector('.user-name').textContent = profileData.name || 'John Doe';
+      document.querySelector('.user-headline').textContent = profileData.headline || 'ECE Student | Web Developer';
+      document.getElementById('about').textContent = profileData.about || 'Passionate about technology and building real-world projects.';
+  
+      const skillsList = document.getElementById('skills');
+      skillsList.innerHTML = '';
+      (profileData.skills || []).forEach(skill => {
+        const li = document.createElement('li');
+        li.textContent = skill;
+        skillsList.appendChild(li);
+      });
+  
+      const projectsList = document.getElementById('projects-list');
+      projectsList.innerHTML = '';
+      (profileData.projects || []).forEach(project => {
+        const li = document.createElement('li');
+        li.innerHTML = `<p><strong>${project}</strong></p>`;
+        projectsList.appendChild(li);
+      });
+  
+      const achievementsList = document.getElementById('achievements-list');
+      achievementsList.innerHTML = '';
+      (profileData.achievements || []).forEach(achievement => {
+        const li = document.createElement('li');
+        li.textContent = achievement;
+        achievementsList.appendChild(li);
+      });
+  
+      const emailField = document.getElementById('email-display');
+      if (emailField) {
+        emailField.textContent = profileData.email || 'Not provided';
+      }
+  
+      const phoneField = document.getElementById('phone-display');
+      if (phoneField) {
+        phoneField.textContent = profileData.phone || 'Not provided';
+      }
+  
+      const linkedinField = document.getElementById('linkedin-link');
+      if (linkedinField) {
+        linkedinField.href = profileData.linkedin || '#';
+        linkedinField.textContent = profileData.linkedin || 'Not provided';
+      }
+  
+      const githubField = document.getElementById('github-link');
+      if (githubField) {
+        githubField.href = profileData.github || '#';
+        githubField.textContent = profileData.github || 'Not provided';
+      }
+    }
+  }
+  
+  function loadProfileData(uid) {
+    const profileRef = db.ref(`profiles/${uid}`);
+    profileRef.once("value")
       .then((snapshot) => {
-        const profileData = snapshot.val();
-        if (profileData) {
-        
-          document.getElementById('profile-pic').src = profileData.profilePic || 'https://via.placeholder.com/150';
-
-          
-          document.querySelector('.user-name').textContent = profileData.name || 'John Doe';
-          document.querySelector('.user-headline').textContent = profileData.headline || 'ECE Student | Web Developer';
-          document.getElementById('about').textContent = profileData.about || 'Passionate about technology and building real-world projects.';
-  
-            const skillsList = document.getElementById('skills');
-            skillsList.innerHTML = '';
-            (profileData.skills || []).forEach(skill => {
-            const li = document.createElement('li');
-            li.textContent = skill;
-            skillsList.appendChild(li);
-            });
-
-            const projectsList = document.getElementById('projects-list');
-            projectsList.innerHTML = '';
-            (profileData.projects || []).forEach(project => {
-            const li = document.createElement('li');
-            li.innerHTML = `<p><strong>${project}</strong></p>`;
-            projectsList.appendChild(li);
-            });
-
-            const achievementsList = document.getElementById('achievements-list');
-            achievementsList.innerHTML = '';
-            (profileData.achievements || []).forEach(achievement => {
-            const li = document.createElement('li');
-            li.textContent = achievement;
-            achievementsList.appendChild(li);
-            });
-
-            const emailField = document.getElementById('email-display');
-            if (emailField) {
-              emailField.textContent = profileData.email || 'Not provided';
-            }
-
-            const phoneField = document.getElementById('phone-display');
-            if (phoneField) {
-              phoneField.textContent = profileData.phone || 'Not provided';
-            }
-
-            const linkedinField = document.getElementById('linkedin-link');
-            if (linkedinField) {
-              linkedinField.href = profileData.linkedin || '#';
-              linkedinField.textContent = profileData.linkedin || 'Not provided';
-            }
-
-            const githubField = document.getElementById('github-link');
-            if (githubField) {
-              githubField.href = profileData.github || '#';
-              githubField.textContent = profileData.github || 'Not provided';
-            }
-  
-          document.querySelector('phone-display').textContent = `Phone: ${profileData.phone || ''}`;
-          document.querySelector('email-display').textContent = `Email: ${profileData.email || ''}`;
-          document.getElementById('linkedin-link').href = profileData.linkedin || '#';
-          document.getElementById('linkedin-link').textContent = profileData.linkedin || 'LinkedIn Profile';
-          document.getElementById('github-link').href = profileData.github || '#';
-          document.getElementById('github-link').textContent = profileData.github || 'GitHub Profile';
-          
+        if (snapshot.exists()) {
+          const profileData = snapshot.val();
+          populateProfile(profileData);
+        } else {
+          console.log("No profile data found for this user.");
         }
       })
       .catch((error) => {
-        console.error('Error fetching profile data:', error);
+        console.error("Error loading profile data:", error);
       });
   }
   
- 
-  document.addEventListener('DOMContentLoaded', loadProfileData);
+  firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+      loadProfileData(user.uid);
+    } else {
+      console.log("No user is logged in.");
+    }
+  });
   
- 
   document.getElementById('edit-profile-form').addEventListener('submit', function (event) {
     event.preventDefault();
   
@@ -122,7 +123,11 @@ function openModal() {
       .then(() => {
         alert('Profile updated successfully!');
         closeModal();
-        loadProfileData(); 
+        firebase.auth().onAuthStateChanged((user) => {
+          if (user) {
+            loadProfileData(user.uid);
+          }
+        });
       })
       .catch(error => {
         console.error('Error updating profile:', error);
@@ -145,12 +150,10 @@ function openModal() {
     reader.onload = function (e) {
       const profilePicUrl = e.target.result; 
   
-      
       document.getElementById('profile-pic').src = profilePicUrl;
   
-      
-      const userId = 'user123'; 
-      db.ref(`users/profile`).update({ profilePic: profilePicUrl })
+      const userId = firebase.auth().currentUser.uid; 
+      db.ref(`profiles/${userId}`).update({ profilePic: profilePicUrl })
         .then(() => {
           alert('Profile picture updated successfully!');
         })
@@ -174,12 +177,10 @@ function openModal() {
     reader.onload = function (e) {
       const profilePicUrl = e.target.result; 
   
-      
       document.getElementById('profile-pic').src = profilePicUrl;
   
-      // Save the profile picture URL to Firebase
-      const userId = 'user123'; 
-      db.ref(`users/profile`).update({ profilePic: profilePicUrl })
+      const userId = firebase.auth().currentUser.uid; 
+      db.ref(`profiles/${userId}`).update({ profilePic: profilePicUrl })
         .then(() => {
           alert('Profile picture updated successfully!');
         })
@@ -204,4 +205,38 @@ function openModal() {
     alert('You have been logged out.');
     window.location.href = '/login.html';
   }
+
+  function saveProfileData(uid, profileData) {
+    const profileRef = db.ref(`profiles/${uid}`);
+    profileRef.set(profileData)
+      .then(() => {
+        console.log("Profile data saved successfully!");
+      })
+      .catch((error) => {
+        console.error("Error saving profile data:", error);
+      });
+  }
+
+  const profileData = {
+    name: "John Doe",
+    headline: "ECE Student | Web Developer",
+    about: "Passionate about technology and building real-world projects.",
+    skills: ["HTML", "CSS", "JavaScript", "Python"],
+    projects: [
+      "Resume Builder – A tool to create resumes with live preview.",
+      "Portfolio Website – A personal website showcasing my projects."
+    ],
+    achievements: [
+      "Completed AI Internship at XYZ Institute",
+      "Won 1st place in Hackathon 2023"
+    ],
+    contact: {
+      email: "johndoe@example.com",
+      phone: "+91-9876543210",
+      linkedin: "https://www.linkedin.com/in/your-profile",
+      github: "https://github.com/your-username"
+    }
+  };
+
+  saveProfileData(firebase.auth().currentUser.uid, profileData);
 
