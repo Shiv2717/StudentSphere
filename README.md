@@ -41,15 +41,3 @@ Firebase (Authentication, Firestore, Storage)
 Git & GitHub
 
 Vercel (for deployment)
-
-
-
-
-
-
-Set environment variables if needed
-
-
-
-
-
