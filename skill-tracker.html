@@ -50,21 +50,17 @@
     <div id="toast" class="toast">Goal added successfully! 🎯</div>
     <div id="badge-toast" class="badge-toast"></div>
 
-    <!-- Badge Count -->
     <div class="badge-count" id="badgeCount">Badges: 0</div>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script type="module" src="skill.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      // Check login state
       const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
       if (!isLoggedIn) {
-        window.location.href = "../login.html"; // Redirect to login page if not logged in
+        window.location.href = "../login.html"; 
       }
 
-      // Apply the saved theme
       const savedTheme = localStorage.getItem("theme");
       if (savedTheme === "dark") {
         document.body.classList.add("dark");
