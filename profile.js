@@ -202,6 +202,14 @@ function openModal() {
   // Logout function
   function logoutUser() {
     alert('You have been logged out.');
-    window.location.href = '/login.html';
+    window.location.href = 'login.html';
   }
+function createUser(userData) {
+  usersRef.push(userData);
+  console.log('User created:', userData);
+  
+}
+
+createUser({ name: 'User One', email: 'user1@example.com' });
+createUser({ name: 'User Two', email: 'user2@example.com' });
 
