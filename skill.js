@@ -8,12 +8,11 @@ const firebaseConfig = {
   authDomain: "student-sphere-bb396.firebaseapp.com",
   databaseURL: "https://student-sphere-bb396-default-rtdb.firebaseio.com",
   projectId: "student-sphere-bb396",
-  storageBucket: "student-sphere-bb396.firebasestorage.app",
+  storageBucket: "student-sphere-bb396.appspot.com", // <-- Fixed
   messagingSenderId: "1059223650747",
   appId: "1:1059223650747:web:36d989ca27354a7bc1449e",
   measurementId: "G-5Q5H5ZJF09"
 };
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
